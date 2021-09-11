@@ -1,6 +1,4 @@
-package org.example.card;
-
-import org.example.user.User;
+package ru.vasilyev.flashcards.domain;
 
 import java.util.Map;
 

@@ -1,6 +1,4 @@
-package org.example.user;
-
-import org.example.deck.Deck;
+package ru.vasilyev.flashcards.domain;
 
 import java.util.List;
 

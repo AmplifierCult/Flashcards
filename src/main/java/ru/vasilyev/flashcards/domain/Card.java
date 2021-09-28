@@ -7,7 +7,7 @@ import java.util.Map;
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     byte [] image;
     String word;
@@ -19,7 +19,11 @@ public class Card {
     User author;
     byte [] exampleOfPronunciation;
 
-    public Card() {
+    protected Card() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public User getAuthor() {

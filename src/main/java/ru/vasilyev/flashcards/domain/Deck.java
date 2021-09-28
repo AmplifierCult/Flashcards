@@ -11,7 +11,7 @@ import java.util.List;
 public class Deck {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     List<Card> deck;
     String deckName;
@@ -19,6 +19,10 @@ public class Deck {
     byte [] cover;
     Instant creationDate;
 
-    public Deck() {
+    protected Deck() {
+    }
+
+    public Long getId() {
+        return id;
     }
 }

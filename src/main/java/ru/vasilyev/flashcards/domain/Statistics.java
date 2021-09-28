@@ -8,7 +8,7 @@ import java.util.Map;
 public class Statistics {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -22,7 +22,11 @@ public class Statistics {
     String knowledgeLevel;
     Map<String, String> history;
 
-    public Statistics() {
+    protected Statistics() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public User getUser() {

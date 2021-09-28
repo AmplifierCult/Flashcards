@@ -11,7 +11,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     String login;
     String password;
@@ -20,6 +20,14 @@ public class User {
     Instant lastActionDate;
     List <Deck> decks;
 
-    public User() {
+    protected User() {
+    }
+
+    public User(String login) {
+        this.login = login;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

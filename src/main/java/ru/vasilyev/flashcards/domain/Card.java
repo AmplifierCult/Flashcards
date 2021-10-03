@@ -12,7 +12,7 @@ public class Card {
     byte [] image;
     String word;
     String translatedWord;
-    Map<String, String> exampleOfUse;
+    //Map<String, String> exampleOfUse;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")

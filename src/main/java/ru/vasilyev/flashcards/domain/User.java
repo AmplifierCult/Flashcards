@@ -18,9 +18,16 @@ public class User {
     String email;
     Instant registrationDate;
     Instant lastActionDate;
-    List <Deck> decks;
+    //List <Deck> decks;
 
     protected User() {
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "User[id=%d, firstName='%s', e-mail='%s']",
+                id, login, email);
     }
 
     public User(String login) {
@@ -29,5 +36,13 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

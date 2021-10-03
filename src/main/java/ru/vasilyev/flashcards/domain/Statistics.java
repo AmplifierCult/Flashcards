@@ -20,7 +20,7 @@ public class Statistics {
 
     Instant lastRecurrenceDate;
     String knowledgeLevel;
-    Map<String, String> history;
+    //Map<String, String> history;
 
     protected Statistics() {
     }

@@ -13,7 +13,7 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    List<Card> deck;
+    //List<Card> deck;
     String deckName;
     Boolean sharedAccess;
     byte [] cover;

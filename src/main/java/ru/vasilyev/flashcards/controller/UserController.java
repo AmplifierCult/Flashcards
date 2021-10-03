@@ -1,7 +1,7 @@
 package ru.vasilyev.flashcards.controller;
 
 /**
- * TODO Реализовать!
+ * TODO Реализовать базовые операции!
  */
 public class UserController {
 }

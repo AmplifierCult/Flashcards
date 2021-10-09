@@ -20,9 +20,18 @@ public class Statistics {
 
     Instant lastRecurrenceDate;
     String knowledgeLevel;
-    //Map<String, String> history;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable
+    @MapKeyColumn(name = "map_key")
+    @Column(name = "map_value")
+    Map<String, String> history;
 
     protected Statistics() {
+    }
+
+    public Statistics(String knowledgeLevel) {
+        this.knowledgeLevel = knowledgeLevel;
     }
 
     public Long getId() {
@@ -35,5 +44,13 @@ public class Statistics {
 
     public Card getCard() {
         return card;
+    }
+
+    public String getKnowledgeLevel() {
+        return knowledgeLevel;
+    }
+
+    public void setKnowledgeLevel(String knowledgeLevel) {
+        this.knowledgeLevel = knowledgeLevel;
     }
 }

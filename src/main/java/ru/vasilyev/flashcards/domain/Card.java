@@ -12,7 +12,12 @@ public class Card {
     byte [] image;
     String word;
     String translatedWord;
-    //Map<String, String> exampleOfUse;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable
+    @MapKeyColumn(name = "map_key")
+    @Column(name = "map_value")
+    Map<String, String> exampleOfUse;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
@@ -22,11 +27,31 @@ public class Card {
     protected Card() {
     }
 
+    public Card(String word) {
+        this.word = word;
+    }
+
     public Long getId() {
         return id;
     }
 
     public User getAuthor() {
         return author;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public Map<String, String> getExampleOfUse() {
+        return exampleOfUse;
+    }
+
+    public void setExampleOfUse(Map<String, String> exampleOfUse) {
+        this.exampleOfUse = exampleOfUse;
     }
 }

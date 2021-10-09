@@ -3,7 +3,6 @@ package ru.vasilyev.flashcards;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.repository.CardRepository;
 
@@ -11,6 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// TODO сделать update тесты для каждого поля каждой сущности
+
 
 @SpringBootTest
 public class CardRepositoryTests {

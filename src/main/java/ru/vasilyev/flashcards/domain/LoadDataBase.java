@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
 @Configuration
@@ -12,7 +13,7 @@ public class LoadDataBase {
     private static final Logger log = LoggerFactory.getLogger(LoadDataBase.class);
 
     @Bean
-    CommandLineRunner initDatabase(UserRepository repository) {
+    CommandLineRunner initUserDatabase(UserRepository repository) {
 
         return args -> {
             log.info("Preloading " + repository.save(new User("Andrey")));
@@ -21,4 +22,15 @@ public class LoadDataBase {
             log.info("Preloading " + repository.save(new User("Igor")));
         };
     }
+
+    @Bean
+    CommandLineRunner initCardDatabase(CardRepository repository) {
+        return args -> {
+            log.info("Preloading " + repository.save(new Card("Wood")));
+            log.info("Preloading " + repository.save(new Card("Iron")));
+            log.info("Preloading " + repository.save(new Card("Water")));
+            log.info("Preloading " + repository.save(new Card("Rock")));
+        };
+    }
+
 }

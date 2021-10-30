@@ -2,7 +2,12 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerErrorException;
 import ru.vasilyev.flashcards.domain.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
@@ -39,16 +44,20 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-//    @GetMapping("/users/{login}")
-//    User getUserByLogin(@PathVariable String login) {
-//        return repository.findByLogin(login);
-//    }
+    @GetMapping("/users/search")
+    User getUserByLogin(@RequestParam(value = "login", required = false) String login) {
+        if(ObjectUtils.isEmpty(login)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User don't write a login.");
+        }
+        return repository.findByLogin(login);
+    }
 
 //    @PostMapping("/users")
 //    User createUser(@RequestParam(value = "login", required = true) String login) {
 //
 //        return repository.save(new User(login));
 //    }
+
     @PostMapping("/users")
     User newUser(@RequestBody User newUser) {
         return repository.save(newUser);

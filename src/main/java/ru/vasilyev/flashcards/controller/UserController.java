@@ -32,16 +32,25 @@ public class UserController {
         return repository.findAll();
     }
 
-    @PostMapping("/users")
-    User createUser(@RequestParam(value = "login", required = true) String login) {
-        repository.save(new User(login));
-        return repository.findByLogin(login);
-    }
-
     @GetMapping("/users/{id}")
-    User one(@PathVariable Long id) {
+    User getUserById(@PathVariable Long id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+//    @GetMapping("/users/{login}")
+//    User getUserByLogin(@PathVariable String login) {
+//        return repository.findByLogin(login);
+//    }
+
+//    @PostMapping("/users")
+//    User createUser(@RequestParam(value = "login", required = true) String login) {
+//
+//        return repository.save(new User(login));
+//    }
+    @PostMapping("/users")
+    User newUser(@RequestBody User newUser) {
+        return repository.save(newUser);
     }
 }

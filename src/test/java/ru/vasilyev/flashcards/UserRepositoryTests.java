@@ -18,7 +18,7 @@ public class UserRepositoryTests {
     void baseCRUDOperations() {
         User savedUser;
         savedUser = repository.save(new User("Jack"));
-        assertEquals(1, repository.count());
+        assertEquals(5, repository.count());
         assertEquals(savedUser.getLogin(), repository.findByLogin("Jack").getLogin());
         assertEquals(savedUser.getId(), repository.findById(savedUser.getId()).get().getId());
 
@@ -27,6 +27,6 @@ public class UserRepositoryTests {
         assertEquals(savedUser.getId(), repository.findByLogin("Mike").getId());
 
         repository.delete(savedUser);
-        assertEquals(0, repository.count());
+        assertEquals(4, repository.count());
     }
 }

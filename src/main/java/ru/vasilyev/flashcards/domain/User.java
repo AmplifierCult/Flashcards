@@ -28,6 +28,15 @@ public class User {
     protected User() {
     }
 
+    public User(String login, String email) {
+        this.login = login;
+        this.email = email;
+    }
+
+    public User(String login) {
+        this.login = login;
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -35,9 +44,7 @@ public class User {
                 id, login, email);
     }
 
-    public User(String login) {
-        this.login = login;
-    }
+
 
     public Long getId() {
         return id;

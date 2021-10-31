@@ -48,4 +48,27 @@ public class CardController {
     Card newCard(@RequestBody Card newCard) {
         return repository.save(newCard);
     }
+
+    @PutMapping("/cards/{id}")
+    Card replaceCard(@RequestBody Card newCard, @PathVariable Long id) {
+        return repository.findById(id)
+                .map(card -> {
+                    card.setImage(newCard.getImage());
+                    card.setWord(newCard.getWord());
+                    card.setTranslatedWord(newCard.getTranslatedWord());
+                    card.setExampleOfPronunciation(newCard.getExampleOfPronunciation());
+                    card.setExampleOfUse(newCard.getExampleOfUse());
+                    card.setAuthor(newCard.getAuthor());
+                    return repository.save(card);
+                })
+                .orElseGet(() -> {
+                    newCard.setId(id);
+                    return repository.save(newCard);
+                });
+    }
+
+    @DeleteMapping("/cards/{id}")
+    void deleteCard(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }

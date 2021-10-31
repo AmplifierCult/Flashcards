@@ -38,29 +38,28 @@ public class User {
         this.login = login;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "User[id=%d, firstName='%s', e-mail='%s']",
-                id, login, email);
-    }
-
-
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLogin() {
         return login;
     }
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -74,5 +73,14 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

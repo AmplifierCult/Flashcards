@@ -35,8 +35,16 @@ public class Card {
         return id;
     }
 
-    public User getAuthor() {
-        return author;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getWord() {
@@ -47,11 +55,44 @@ public class Card {
         this.word = word;
     }
 
+    public String getTranslatedWord() {
+        return translatedWord;
+    }
+
+    public void setTranslatedWord(String translatedWord) {
+        this.translatedWord = translatedWord;
+    }
+
+    public byte[] getExampleOfPronunciation() {
+        return exampleOfPronunciation;
+    }
+
+    public void setExampleOfPronunciation(byte[] exampleOfPronunciation) {
+        this.exampleOfPronunciation = exampleOfPronunciation;
+    }
+
     public Map<String, String> getExampleOfUse() {
         return exampleOfUse;
     }
 
     public void setExampleOfUse(Map<String, String> exampleOfUse) {
         this.exampleOfUse = exampleOfUse;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", word='" + word + '\'' +
+                ", author=" + author +
+                '}';
     }
 }

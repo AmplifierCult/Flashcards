@@ -18,15 +18,19 @@ public class DeckRepositoryTests {
     @Test
     void baseCRUDOperations() {
         Deck savedDeck;
+
+        //create
         savedDeck = repository.save(new Deck("Coding"));
         assertEquals(1, repository.count());
         assertEquals(savedDeck.getDeckName(), repository.findByDeckName("Coding").getDeckName());
         assertEquals(savedDeck.getId(), repository.findById(savedDeck.getId()).get().getId());
 
+        //update
         savedDeck.setDeckName("Fishing");
         repository.save(savedDeck);
         assertEquals(savedDeck.getId(), repository.findByDeckName("Fishing").getId());
 
+        //delete
         repository.delete(savedDeck);
         assertEquals(0, repository.count());
     }

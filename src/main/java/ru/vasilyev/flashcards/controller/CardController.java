@@ -7,7 +7,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Card;
-import ru.vasilyev.flashcards.domain.LoadDataBase;
 import ru.vasilyev.flashcards.repository.CardRepository;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 @RestController
 public class CardController {
 
-    private static final Logger log = LoggerFactory.getLogger(LoadDataBase.class);
+    private static final Logger log = LoggerFactory.getLogger(CardController.class);
 
     private final CardRepository repository;
 
@@ -38,7 +37,7 @@ public class CardController {
     @GetMapping("/cards/search")
     Card getCardByWord(@RequestParam(value = "word", required = false) String word) {
         if(ObjectUtils.isEmpty(word)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User don't write a word.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a word.");
         } else if(ObjectUtils.isEmpty(repository.findByWord(word))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Card not found.");
         } else return repository.findByWord(word);

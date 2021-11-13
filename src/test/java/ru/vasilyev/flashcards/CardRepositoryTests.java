@@ -23,11 +23,14 @@ public class CardRepositoryTests {
     //@Transactional
     void baseCRUDOperations() {
         Card savedCard;
+
+        //create
         savedCard = repository.save(new Card("Java"));
         assertEquals(1, repository.count());
         assertEquals(savedCard.getWord(), repository.findByWord("Java").getWord());
         assertEquals(savedCard.getId(), repository.findById(savedCard.getId()).get().getId());
 
+        //update
         savedCard.setWord("learning");
         Map<String, String> exampleOfUse = new HashMap<>();
         exampleOfUse.put(savedCard.getWord(), "Java learning");
@@ -36,7 +39,7 @@ public class CardRepositoryTests {
         assertEquals(savedCard.getId(), repository.findByWord("learning").getId());
         assertEquals(savedCard.getExampleOfUse(), repository.findById(savedCard.getId()).get().getExampleOfUse());
 
-
+        //delete
         repository.delete(savedCard);
         assertEquals(0, repository.count());
     }

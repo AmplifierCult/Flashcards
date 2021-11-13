@@ -17,15 +17,19 @@ public class UserRepositoryTests {
     @Test
     void baseCRUDOperations() {
         User savedUser;
+
+        //create
         savedUser = repository.save(new User("Jack"));
         assertEquals(5, repository.count());
         assertEquals(savedUser.getLogin(), repository.findByLogin("Jack").getLogin());
         assertEquals(savedUser.getId(), repository.findById(savedUser.getId()).get().getId());
 
+        //update
         savedUser.setLogin("Mike");
         repository.save(savedUser);
         assertEquals(savedUser.getId(), repository.findByLogin("Mike").getId());
 
+        //delete
         repository.delete(savedUser);
         assertEquals(4, repository.count());
     }

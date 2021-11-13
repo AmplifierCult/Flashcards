@@ -16,15 +16,18 @@ public class StatisticsRepositoryTests {
     @Test
     void baseCRUDOperations() {
         Statistics savedStatistics;
+
+        //create
         savedStatistics = repository.save(new Statistics("Low"));
         assertEquals(1, repository.count());
-        assertEquals(savedStatistics.getKnowledgeLevel(), repository.findByKnowledgeLevel("Low").getKnowledgeLevel());
         assertEquals(savedStatistics.getId(), repository.findById(savedStatistics.getId()).get().getId());
 
+        //update
         savedStatistics.setKnowledgeLevel("Perfect");
         repository.save(savedStatistics);
-        assertEquals(savedStatistics.getId(), repository.findByKnowledgeLevel("Perfect").getId());
+        assertEquals(savedStatistics.getKnowledgeLevel(), repository.findById(savedStatistics.getId()).get().getKnowledgeLevel());
 
+        //delete
         repository.delete(savedStatistics);
         assertEquals(0, repository.count());
     }

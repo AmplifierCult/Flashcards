@@ -7,11 +7,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,9 +30,10 @@ public class UserControllerTests {
     @Test
     void userControllerRequests() throws Exception {
 
-        //this.mockMvc.perform(get("/users")).andExpect(status().isOk());
+        //GET
+        this.mockMvc.perform(get("/users")).andExpect(status().isOk());
 
-        //RequestBuilder post = ("/users");
+        //POST
         this.mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString("Mike"))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -42,5 +42,18 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.login").value("Mike"));
 
+        //PUT
+        User newUser = new User("Arnold");
+        newUser.setEmail("arnold123@mail.ru");
+        this.mockMvc.perform(put("/users/9")
+                .content(objectMapper.writeValueAsString(newUser))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(jsonPath("$.id").value(9))
+                .andExpect(jsonPath("$.login").value("Arnold"))
+                .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));
+
+        //DELETE
+        this.mockMvc.perform(delete("/user/9")).andExpect(status().isOk());
     }
 }

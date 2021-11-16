@@ -19,7 +19,7 @@ public class StatisticsRepositoryTests {
 
         //create
         savedStatistics = repository.save(new Statistics("Low"));
-        assertEquals(1, repository.count());
+        assertEquals(5, repository.count());
         assertEquals(savedStatistics.getId(), repository.findById(savedStatistics.getId()).get().getId());
 
         //update
@@ -29,6 +29,6 @@ public class StatisticsRepositoryTests {
 
         //delete
         repository.delete(savedStatistics);
-        assertEquals(0, repository.count());
+        assertEquals(4, repository.count());
     }
 }

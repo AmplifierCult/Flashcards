@@ -21,7 +21,7 @@ public class DeckRepositoryTests {
 
         //create
         savedDeck = repository.save(new Deck("Coding"));
-        assertEquals(1, repository.count());
+        assertEquals(5, repository.count());
         assertEquals(savedDeck.getDeckName(), repository.findByDeckName("Coding").getDeckName());
         assertEquals(savedDeck.getId(), repository.findById(savedDeck.getId()).get().getId());
 
@@ -32,6 +32,6 @@ public class DeckRepositoryTests {
 
         //delete
         repository.delete(savedDeck);
-        assertEquals(0, repository.count());
+        assertEquals(4, repository.count());
     }
 }

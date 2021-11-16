@@ -44,6 +44,7 @@ public class CardController {
     }
 
     @PostMapping("/cards")
+    @ResponseStatus(HttpStatus.CREATED)
     Card newCard(@RequestBody Card newCard) {
         return repository.save(newCard);
     }

@@ -44,6 +44,7 @@ public class DeckController {
     }
 
     @PostMapping("/decks")
+    @ResponseStatus(HttpStatus.CREATED)
     Deck newDeck(@RequestBody Deck newDeck) {
         return repository.save(newDeck);
     }

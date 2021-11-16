@@ -26,7 +26,7 @@ public class CardRepositoryTests {
 
         //create
         savedCard = repository.save(new Card("Java"));
-        assertEquals(1, repository.count());
+        assertEquals(5, repository.count());
         assertEquals(savedCard.getWord(), repository.findByWord("Java").getWord());
         assertEquals(savedCard.getId(), repository.findById(savedCard.getId()).get().getId());
 
@@ -41,6 +41,6 @@ public class CardRepositoryTests {
 
         //delete
         repository.delete(savedCard);
-        assertEquals(0, repository.count());
+        assertEquals(4, repository.count());
     }
 }

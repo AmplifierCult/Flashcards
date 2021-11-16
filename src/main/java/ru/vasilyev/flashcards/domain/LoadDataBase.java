@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.vasilyev.flashcards.repository.CardRepository;
+import ru.vasilyev.flashcards.repository.StatisticsRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
 @Configuration
@@ -30,6 +31,16 @@ public class LoadDataBase {
             log.info("Preloading " + repository.save(new Card("Iron")));
             log.info("Preloading " + repository.save(new Card("Water")));
             log.info("Preloading " + repository.save(new Card("Rock")));
+        };
+    }
+
+    @Bean
+    CommandLineRunner initStatisticsDatabase(StatisticsRepository repository) {
+        return args -> {
+            log.info("Preloading " + repository.save(new Statistics("Low")));
+            log.info("Preloading " + repository.save(new Statistics("Middle")));
+            log.info("Preloading " + repository.save(new Statistics("High")));
+            log.info("Preloading " + repository.save(new Statistics("Perfect")));
         };
     }
 

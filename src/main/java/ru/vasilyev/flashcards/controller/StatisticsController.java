@@ -44,6 +44,7 @@ public class StatisticsController {
     }
 
     @PostMapping("/statistics")
+    @ResponseStatus(HttpStatus.CREATED)
     Statistics newStatistics(@RequestBody Statistics newStatistics) {
         return repository.save(newStatistics);
     }

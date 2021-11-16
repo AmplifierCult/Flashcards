@@ -45,15 +45,15 @@ public class UserControllerTests {
         //PUT
         User newUser = new User("Arnold");
         newUser.setEmail("arnold123@mail.ru");
-        this.mockMvc.perform(put("/users/9")
+        this.mockMvc.perform(put("/users/3")
                 .content(objectMapper.writeValueAsString(newUser))
                 .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(jsonPath("$.id").value(9))
+                .andExpect(jsonPath("$.id").value(3))
                 .andExpect(jsonPath("$.login").value("Arnold"))
                 .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));
 
         //DELETE
-        this.mockMvc.perform(delete("/user/9")).andExpect(status().isOk());
+        this.mockMvc.perform(delete("/user/3")).andExpect(status().isOk());
     }
 }

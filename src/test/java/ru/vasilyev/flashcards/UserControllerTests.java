@@ -1,6 +1,9 @@
 package ru.vasilyev.flashcards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +30,19 @@ public class UserControllerTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    LoadDataBase loadDataBase;
+
+    @BeforeEach
+    void setUp() {
+        loadDataBase.initUserDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        loadDataBase.cleanUserDataBase();
+    }
+
     @Test
     void userControllerRequests() throws Exception {
 
@@ -49,7 +65,7 @@ public class UserControllerTests {
                 .content(objectMapper.writeValueAsString(newUser))
                 .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.login").value("Arnold"))
                 .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));
 

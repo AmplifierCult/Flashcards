@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +29,19 @@ public class CardControllerTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    LoadDataBase loadDataBase;
+
+    @BeforeEach
+    void setUp() {
+        loadDataBase.initCardDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        loadDataBase.cleanCardDataBase();
+    }
+
     @Test
     void cardControllerRequests() throws Exception {
 
@@ -45,17 +60,17 @@ public class CardControllerTests {
         //PUT
         Card newCard = new Card("Metal");
         newCard.setTranslatedWord("Металл");
-        this.mockMvc.perform(put("/cards/8")
+        this.mockMvc.perform(put("/cards/4")
                         .content(objectMapper.writeValueAsString(newCard))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(jsonPath("$.id").value(8))
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.word").value("Metal"))
                 .andExpect(jsonPath("$.translatedWord").value("Металл"));
 
         //DELETE
-        this.mockMvc.perform(delete("/cards/8")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/cards/8")).andExpect(status().isBadRequest());
+        this.mockMvc.perform(delete("/cards/5")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/cards/5")).andExpect(status().isBadRequest());
 
     }
 }

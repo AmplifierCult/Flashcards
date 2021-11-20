@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +30,19 @@ public class DeckControllerTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    LoadDataBase loadDataBase;
+
+    @BeforeEach
+    void setUp() {
+        loadDataBase.initDeckDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        loadDataBase.cleanDeckDataBase();
+    }
+
     @Test
     void deckControllerRequests() throws Exception {
         //GET
@@ -43,15 +58,15 @@ public class DeckControllerTests {
                 .andExpect(jsonPath("$.deckName").value("Engineering"));
 
         //PUT
-        this.mockMvc.perform(put("/decks/15")
+        this.mockMvc.perform(put("/decks/4")
                         .content(objectMapper.writeValueAsString("Space"))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(jsonPath("$.id").value(15))
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.deckName").value("Space"));
 
         //DELETE
-        this.mockMvc.perform(delete("/decks/16")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/decks/16")).andExpect(status().isBadRequest());
+        this.mockMvc.perform(delete("/decks/2")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/decks/2")).andExpect(status().isBadRequest());
     }
 }

@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.Statistics;
+import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,7 +29,25 @@ public class StatisticsControllerTests {
     StatisticsRepository repository;
 
     @Autowired
+    CardRepository cardRepository;
+
+    @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    LoadDataBase loadDataBase;
+
+    @BeforeEach
+    void setUp() {
+        loadDataBase.initStatisticsDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        loadDataBase.cleanStatisticsDataBase();
+        loadDataBase.cleanCardDataBase();
+    }
+
 
     @Test
     void statisticsControllerRequests() throws Exception {
@@ -45,18 +66,19 @@ public class StatisticsControllerTests {
 
         //PUT
         Statistics newStatistics = new Statistics("High");
-//        Card newCard = new Card("Gold");
-//        newStatistics.setCard(newCard);
-        this.mockMvc.perform(put("/statistics/10")
+        Card newCard = new Card("Gold");
+        cardRepository.save(newCard);
+        newStatistics.setCard(newCard);
+        this.mockMvc.perform(put("/statistics/4")
                         .content(objectMapper.writeValueAsString(newStatistics))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(jsonPath("$.id").value(10))
-                .andExpect(jsonPath("$.knowledgeLevel").value("High"));
-//                .andExpect(jsonPath("$.card").isNotEmpty());
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.knowledgeLevel").value("High"))
+                .andExpect(jsonPath("$.card").isNotEmpty());
 
         //DELETE
-        this.mockMvc.perform(delete("/statistics/12")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/statistics/12")).andExpect(status().isBadRequest());
+        this.mockMvc.perform(delete("/statistics/1")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/statistics/1")).andExpect(status().isBadRequest());
     }
 }

@@ -10,8 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.repository.CardRepository;
+import ru.vasilyev.flashcards.repository.DeckRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,7 +31,7 @@ public class DeckControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    CardRepository repository;
+    DeckRepository deckRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -40,6 +46,9 @@ public class DeckControllerTests {
 
     @AfterEach
     void tearDown() {
+        loadDataBase.cleanStatisticsDataBase();
+        loadDataBase.cleanCardDataBase();
+        loadDataBase.cleanUserDataBase();
         loadDataBase.cleanDeckDataBase();
     }
 
@@ -54,7 +63,7 @@ public class DeckControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.deckName").value("Engineering"));
 
         //PUT
@@ -64,9 +73,12 @@ public class DeckControllerTests {
                 )
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.deckName").value("Space"));
+    }
 
-        //DELETE
-        this.mockMvc.perform(delete("/decks/2")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/decks/2")).andExpect(status().isBadRequest());
+    @Test
+    void deckControllerDeleteRequest() throws Exception {
+        Long id = deckRepository.findByDeckName("Weather").getId();
+        this.mockMvc.perform(delete("/decks/{id}", id)).andExpect(status().isOk());
+        this.mockMvc.perform(get("/decks/{id}", id)).andExpect(status().isBadRequest());
     }
 }

@@ -24,7 +24,7 @@ public class CardControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    CardRepository repository;
+    CardRepository cardRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -39,7 +39,10 @@ public class CardControllerTests {
 
     @AfterEach
     void tearDown() {
+        loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
+        loadDataBase.cleanUserDataBase();
+        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
@@ -67,10 +70,12 @@ public class CardControllerTests {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.word").value("Metal"))
                 .andExpect(jsonPath("$.translatedWord").value("Металл"));
+    }
 
-        //DELETE
-        this.mockMvc.perform(delete("/cards/5")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/cards/5")).andExpect(status().isBadRequest());
-
+    @Test
+    void cardControllerDeleteRequest() throws Exception {
+        Long id = cardRepository.findByWord("Wood").getId();
+        this.mockMvc.perform(delete("/cards/{id}", id)).andExpect(status().isOk());
+        this.mockMvc.perform(get("/cards/{id}", id)).andExpect(status().isBadRequest());
     }
 }

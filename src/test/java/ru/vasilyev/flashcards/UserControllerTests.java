@@ -25,7 +25,7 @@ public class UserControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository repository;
+    UserRepository userRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -40,7 +40,10 @@ public class UserControllerTests {
 
     @AfterEach
     void tearDown() {
+        loadDataBase.cleanStatisticsDataBase();
+        loadDataBase.cleanCardDataBase();
         loadDataBase.cleanUserDataBase();
+        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
@@ -68,9 +71,12 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.login").value("Arnold"))
                 .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));
+    }
 
-        //DELETE
-        this.mockMvc.perform(delete("/user/3")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/user/3")).andExpect(status().isMethodNotAllowed());
+    @Test
+    void userControllerDeleteRequests() throws Exception {
+        Long id = userRepository.findByLogin("Igor").getId();
+        this.mockMvc.perform(delete("/user/{id}", id)).andExpect(status().isOk());
+        this.mockMvc.perform(get("/user/{id}", id)).andExpect(status().isMethodNotAllowed());
     }
 }

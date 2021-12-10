@@ -14,6 +14,8 @@ import ru.vasilyev.flashcards.domain.Statistics;
 import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +28,7 @@ public class StatisticsControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    StatisticsRepository repository;
+    StatisticsRepository statisticsRepository;
 
     @Autowired
     CardRepository cardRepository;
@@ -40,12 +42,15 @@ public class StatisticsControllerTests {
     @BeforeEach
     void setUp() {
         loadDataBase.initStatisticsDatabase();
+        loadDataBase.initCardDatabase();
     }
 
     @AfterEach
     void tearDown() {
         loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
+        loadDataBase.cleanUserDataBase();
+        loadDataBase.cleanDeckDataBase();
     }
 
 
@@ -76,9 +81,13 @@ public class StatisticsControllerTests {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.knowledgeLevel").value("High"))
                 .andExpect(jsonPath("$.card").isNotEmpty());
-
-        //DELETE
-        this.mockMvc.perform(delete("/statistics/1")).andExpect(status().isOk());
-        this.mockMvc.perform(get("/statistics/1")).andExpect(status().isBadRequest());
     }
+
+    @Test
+    void statisticsControllerDeleteRequest() throws Exception {
+        Long id = statisticsRepository.findByKnowledgeLevel("Low").get(0).getId();
+        this.mockMvc.perform(delete("/statistics/{id}", id)).andExpect(status().isOk());
+        this.mockMvc.perform(get("/statistics/{id}", id)).andExpect(status().isBadRequest());
+    }
+
 }

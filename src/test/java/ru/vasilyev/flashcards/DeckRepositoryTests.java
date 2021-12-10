@@ -27,6 +27,9 @@ public class DeckRepositoryTests {
 
     @AfterEach
     void tearDown() {
+        loadDataBase.cleanStatisticsDataBase();
+        loadDataBase.cleanCardDataBase();
+        loadDataBase.cleanUserDataBase();
         loadDataBase.cleanDeckDataBase();
     }
 

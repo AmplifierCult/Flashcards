@@ -11,10 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.Statistics;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
-
-import java.util.List;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +32,9 @@ public class StatisticsControllerTests {
 
     @Autowired
     CardRepository cardRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -53,14 +56,13 @@ public class StatisticsControllerTests {
         loadDataBase.cleanDeckDataBase();
     }
 
+    @Test
+    void statisticsControllerGetRequests() throws Exception {
+        this.mockMvc.perform(get("/statistics")).andExpect(status().isOk());
+    }
 
     @Test
-    void statisticsControllerRequests() throws Exception {
-
-        //GET
-        this.mockMvc.perform(get("/statistics")).andExpect(status().isOk());
-
-        //POST
+    void statisticsControllerPostRequest() throws Exception {
         this.mockMvc.perform(post("/statistics")
                         .content(objectMapper.writeValueAsString("Low"))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,13 +70,17 @@ public class StatisticsControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.knowledgeLevel").value("Low"));
+    }
 
-        //PUT
+    @Test
+    void statisticsControllerPutRequest() throws Exception {
         Statistics newStatistics = new Statistics("High");
-        Card newCard = new Card("Gold");
+        Long authorId = userRepository.findByLogin("Andrey").getId();
+        Card newCard = new Card("Gold", authorId);
         cardRepository.save(newCard);
         newStatistics.setCard(newCard);
-        this.mockMvc.perform(put("/statistics/4")
+        Long id = statisticsRepository.findByKnowledgeLevel("Perfect").get(0).getId();
+        this.mockMvc.perform(put("/statistics/{id}", id)
                         .content(objectMapper.writeValueAsString(newStatistics))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -89,5 +95,4 @@ public class StatisticsControllerTests {
         this.mockMvc.perform(delete("/statistics/{id}", id)).andExpect(status().isOk());
         this.mockMvc.perform(get("/statistics/{id}", id)).andExpect(status().isBadRequest());
     }
-
 }

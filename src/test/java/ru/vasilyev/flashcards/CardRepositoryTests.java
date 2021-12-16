@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.CardRepository;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class CardRepositoryTests {
     @Autowired
-    CardRepository repository;
+    CardRepository cardRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     LoadDataBase loadDataBase;
@@ -38,27 +43,34 @@ public class CardRepositoryTests {
     }
 
     @Test
-    //@Transactional
-    void baseCRUDOperations() {
+    void baseCreateOperation() {
+        Long authorId = userRepository.findByLogin("Andrey").getId();
         Card savedCard;
-
-        //create
-        savedCard = repository.save(new Card("Java"));
-        assertEquals(5, repository.count());
-        assertEquals(savedCard.getWord(), repository.findByWord("Java").getWord());
-        assertEquals(savedCard.getId(), repository.findById(savedCard.getId()).get().getId());
-
-        //update
-        savedCard.setWord("learning");
-        Map<String, String> exampleOfUse = new HashMap<>();
-        exampleOfUse.put(savedCard.getWord(), "Java learning");
-        savedCard.setExampleOfUse(exampleOfUse);
-        repository.save(savedCard);
-        assertEquals(savedCard.getId(), repository.findByWord("learning").getId());
-        assertEquals(savedCard.getExampleOfUse(), repository.findById(savedCard.getId()).get().getExampleOfUse());
-
-        //delete
-        repository.delete(savedCard);
-        assertEquals(4, repository.count());
+        savedCard = cardRepository.save(new Card("Java", authorId));
+        assertEquals(5, cardRepository.count());
+        assertEquals(savedCard.getWord(), cardRepository.findByWord("Java").getWord());
+        assertEquals(savedCard.getId(), cardRepository.findById(savedCard.getId()).get().getId());
     }
+
+    @Test
+    void baseUpdateOperation() {
+        Card card = cardRepository.findByWord("Iron");
+        Map<String, String> exampleOfUse = new HashMap<>();
+        exampleOfUse.put(card.getWord(), "Humans stopped using stone because bronze and iron were superior materials.");
+        card.setExampleOfUse(exampleOfUse);
+        cardRepository.save(card);
+        assertEquals(card.getId(), cardRepository.findByWord("Iron").getId());
+        assertEquals(card.getExampleOfUse(), cardRepository.findById(card.getId()).get().getExampleOfUse());
+        assertEquals(4, cardRepository.count());
+    }
+
+    @Test
+    void baseDeleteOperation() {
+        Card card = cardRepository.findAll().get(3);
+        cardRepository.delete(card);
+        assertEquals(3, cardRepository.count());
+    }
+
+
+
 }

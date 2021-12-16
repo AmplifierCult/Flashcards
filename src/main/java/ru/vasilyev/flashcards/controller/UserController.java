@@ -2,7 +2,6 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 /**

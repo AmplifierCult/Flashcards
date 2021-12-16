@@ -43,10 +43,11 @@ public class LoadDataBase {
 
 
     void initCardDatabase() {
-        log.info("Preloading " + cardRepository.save(new Card("Wood")));
-        log.info("Preloading " + cardRepository.save(new Card("Iron")));
-        log.info("Preloading " + cardRepository.save(new Card("Water")));
-        log.info("Preloading " + cardRepository.save(new Card("Rock")));
+        Long authorId = userRepository.findByLogin("Andrey").getId();
+        log.info("Preloading " + cardRepository.save(new Card("Wood", authorId)));
+        log.info("Preloading " + cardRepository.save(new Card("Iron", authorId)));
+        log.info("Preloading " + cardRepository.save(new Card("Water", authorId)));
+        log.info("Preloading " + cardRepository.save(new Card("Rock", authorId)));
     }
 
     void cleanCardDataBase() {

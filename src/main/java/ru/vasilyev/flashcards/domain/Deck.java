@@ -24,6 +24,9 @@ public class Deck {
     Boolean sharedAccess;
     byte [] cover;
     Instant creationDate;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    User author;
 
     protected Deck() {
     }
@@ -74,6 +77,14 @@ public class Deck {
 
     public Instant getCreationDate() {
         return creationDate;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public void setCreationDate(Instant creationDate) {

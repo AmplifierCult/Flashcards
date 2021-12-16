@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.CardRepository;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,6 +29,9 @@ public class CardControllerTests {
     CardRepository cardRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     MockMvc mockMvc;
 
     @Autowired
@@ -34,6 +39,7 @@ public class CardControllerTests {
 
     @BeforeEach
     void setUp() {
+        loadDataBase.initUserDatabase();
         loadDataBase.initCardDatabase();
     }
 
@@ -46,12 +52,13 @@ public class CardControllerTests {
     }
 
     @Test
-    void cardControllerRequests() throws Exception {
-
-        //GET
+    void cardControllerGetRequests() throws Exception {
         this.mockMvc.perform(get("/cards")).andExpect(status().isOk());
+    }
 
-        //POST
+    @Test
+    void cardControllerPostRequests() throws Exception {
+        Long authorId = userRepository.findByLogin("Andrey").getId();
         this.mockMvc.perform(post("/cards")
                         .content(objectMapper.writeValueAsString("Steel"))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,11 +66,15 @@ public class CardControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.word").value("Steel"));
+    }
 
-        //PUT
-        Card newCard = new Card("Metal");
+    @Test
+    void cardControllerPutRequest() throws Exception {
+        Long authorId = userRepository.findByLogin("Andrey").getId();
+        Card newCard = new Card("Metal", authorId);
         newCard.setTranslatedWord("Металл");
-        this.mockMvc.perform(put("/cards/4")
+        Long id = cardRepository.findByWord("Rock").getId();
+        this.mockMvc.perform(put("/cards/{id}", id)
                         .content(objectMapper.writeValueAsString(newCard))
                         .contentType(MediaType.APPLICATION_JSON)
                 )

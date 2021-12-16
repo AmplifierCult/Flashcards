@@ -47,27 +47,29 @@ public class UserControllerTests {
     }
 
     @Test
-    void userControllerRequests() throws Exception {
-
-        //GET
+    void userControllerGetRequests() throws Exception {
         this.mockMvc.perform(get("/users")).andExpect(status().isOk());
+    }
 
-        //POST
+    @Test
+    void userControllerPostRequests() throws Exception {
         this.mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString("Mike"))
                         .contentType(MediaType.APPLICATION_JSON)
-        )
+                )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.login").value("Mike"));
+    }
 
-        //PUT
+    @Test
+    void userControllerPutRequests() throws Exception {
         User newUser = new User("Arnold");
         newUser.setEmail("arnold123@mail.ru");
         this.mockMvc.perform(put("/users/3")
-                .content(objectMapper.writeValueAsString(newUser))
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+                        .content(objectMapper.writeValueAsString(newUser))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.login").value("Arnold"))
                 .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));

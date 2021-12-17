@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // TODO сделать update тесты для каждого поля каждой сущности
 
-
 @SpringBootTest
 public class CardRepositoryTests {
     @Autowired
@@ -31,6 +30,7 @@ public class CardRepositoryTests {
 
     @BeforeEach
     void setUp() {
+        loadDataBase.initUserDatabase();
         loadDataBase.initCardDatabase();
     }
 
@@ -44,9 +44,8 @@ public class CardRepositoryTests {
 
     @Test
     void baseCreateOperation() {
-        Long authorId = userRepository.findByLogin("Andrey").getId();
-        Card savedCard;
-        savedCard = cardRepository.save(new Card("Java", authorId));
+        User author = userRepository.findByLogin("Andrey");
+        Card savedCard = cardRepository.save(new Card("Java", author));
         assertEquals(5, cardRepository.count());
         assertEquals(savedCard.getWord(), cardRepository.findByWord("Java").getWord());
         assertEquals(savedCard.getId(), cardRepository.findById(savedCard.getId()).get().getId());
@@ -70,7 +69,4 @@ public class CardRepositoryTests {
         cardRepository.delete(card);
         assertEquals(3, cardRepository.count());
     }
-
-
-
 }

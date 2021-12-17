@@ -12,7 +12,7 @@ public interface StatisticsRepository extends CrudRepository<Statistics, Long> {
 
     Statistics findById(long id);
 
-    Statistics findByCard(Card card); //TODO FIX ME
+    Statistics findByCardId(long cardId);
 
     List<Statistics> findAll();
 }

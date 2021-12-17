@@ -33,6 +33,8 @@ public class DeckControllerTests {
 
     @BeforeEach
     void setUp() {
+        loadDataBase.initUserDatabase();
+        loadDataBase.initCardDatabase();
         loadDataBase.initDeckDatabase();
     }
 
@@ -70,7 +72,6 @@ public class DeckControllerTests {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.deckName").value("Space"));
     }
-
 
     @Test
     void deckControllerDeleteRequest() throws Exception {

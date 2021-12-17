@@ -24,6 +24,7 @@ public class Deck {
     Boolean sharedAccess;
     byte [] cover;
     Instant creationDate;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     User author;
@@ -31,8 +32,9 @@ public class Deck {
     protected Deck() {
     }
 
-    public Deck(String deckName) {
+    public Deck(String deckName, User author) {
         this.deckName = deckName;
+        this.author = author;
     }
 
     public Long getId() {
@@ -113,6 +115,8 @@ public class Deck {
                 ", deckName='" + deckName + '\'' +
                 ", sharedAccess=" + sharedAccess +
                 ", creationDate=" + creationDate +
+                ", authorId=" + author.getId() +
+                ", authorName=" + author.getLogin() +
                 '}';
     }
 }

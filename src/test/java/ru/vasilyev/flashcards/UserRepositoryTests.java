@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class UserRepositoryTests {
     @Autowired
-    UserRepository repository;
+    UserRepository userRepository;
 
     @Autowired
     LoadDataBase loadDataBase;
@@ -33,22 +33,29 @@ public class UserRepositoryTests {
     }
 
     @Test
-    void baseCRUDOperations() {
-        User savedUser;
-
-        //create
-        savedUser = repository.save(new User("Jack"));
-        assertEquals(5, repository.count());
-        assertEquals(savedUser.getLogin(), repository.findByLogin("Jack").getLogin());
-        assertEquals(savedUser.getId(), repository.findById(savedUser.getId()).get().getId());
-
-        //update
-        savedUser.setLogin("Mike");
-        repository.save(savedUser);
-        assertEquals(savedUser.getId(), repository.findByLogin("Mike").getId());
-
-        //delete
-        repository.delete(savedUser);
-        assertEquals(4, repository.count());
+    void baseCreateOperations() {
+        User newUser;
+        newUser = userRepository.save(new User("Jack"));
+        assertEquals(5, userRepository.count());
+        assertEquals(newUser.getLogin(), userRepository.findByLogin("Jack").getLogin());
+        assertEquals(newUser.getId(), userRepository.findById(newUser.getId()).get().getId());
     }
+
+
+    @Test
+    void baseUpdateOperations() { //TODO FIX ME
+        User updatedUser = userRepository.findAll().get(3);
+        updatedUser.setLogin("Ivan");
+        assertEquals(updatedUser.getId(), userRepository.findByLogin("Ivan").getId());
+    }
+
+
+
+    @Test
+    void baseDeleteOperations() {
+        User user = userRepository.findByLogin("Igor");
+        userRepository.delete(user);
+        assertEquals(3, userRepository.count());
+    }
+
 }

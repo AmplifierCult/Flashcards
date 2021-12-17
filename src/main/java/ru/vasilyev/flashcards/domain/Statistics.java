@@ -31,8 +31,10 @@ public class Statistics {
     protected Statistics() {
     }
 
-    public Statistics(String knowledgeLevel) {
+    public Statistics(String knowledgeLevel, User user, Card card) {
         this.knowledgeLevel = knowledgeLevel;
+        this.user = user;
+        this.card = card;
     }
 
     public Long getId() {
@@ -55,7 +57,7 @@ public class Statistics {
         return card;
     }
 
-    public void setCard(Card card) {
+    public void setCard(Card cardId) {
         this.card = card;
     }
 
@@ -102,8 +104,10 @@ public class Statistics {
     public String toString() {
         return "Statistics{" +
                 "id=" + id +
-                ", user=" + user +
-                ", card=" + card +
+                ", userId=" + user.getId() +
+                ", userName=" + user.getLogin() +
+                ", cardId=" + card.getId() +
+                ", word=" + card.getWord() +
                 ", lastRecurrenceDate=" + lastRecurrenceDate +
                 ", knowledgeLevel='" + knowledgeLevel + '\'' +
                 '}';

@@ -2,12 +2,15 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.repository.CardRepository;
+import ru.vasilyev.flashcards.services.CardService;
+import ru.vasilyev.flashcards.services.UserService;
 
 import java.util.List;
 
@@ -15,6 +18,9 @@ import java.util.List;
 public class CardController {
 
     private static final Logger log = LoggerFactory.getLogger(CardController.class);
+
+    @Autowired
+    CardService cardService;
 
     private final CardRepository repository;
 
@@ -45,9 +51,10 @@ public class CardController {
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
-    Card newCard(@RequestBody Card newCard) {
-        return repository.save(newCard);
+    Card createCard(@RequestBody Card newCard) {
+        return cardService.createCard(newCard);
     }
+
 
     @PutMapping("/cards/{id}")
     Card replaceCard(@RequestBody Card newCard, @PathVariable Long id) {

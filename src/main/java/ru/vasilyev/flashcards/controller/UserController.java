@@ -2,6 +2,7 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
 import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.services.UserService;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ import java.util.List;
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    UserService userService;
 
     private final UserRepository repository;
 
@@ -54,16 +59,7 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(user -> {
-                    user.setLogin(newUser.getLogin());
-                    user.setEmail(newUser.getEmail());
-                    return repository.save(user);
-                })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return repository.save(newUser);
-                });
+        return userService.updateUser(newUser, id);
     }
 
     @DeleteMapping("/user/{id}")

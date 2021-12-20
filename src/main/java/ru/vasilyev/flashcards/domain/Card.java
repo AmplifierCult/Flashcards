@@ -1,6 +1,7 @@
 package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Map;
 
 @Entity
@@ -23,6 +24,8 @@ public class Card {
     @JoinColumn(name = "author_id")
     User author;
     byte [] exampleOfPronunciation;
+
+    Instant creationDate;
 
     protected Card() {
     }
@@ -86,6 +89,14 @@ public class Card {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override

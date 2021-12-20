@@ -10,7 +10,6 @@ import ru.vasilyev.flashcards.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 @SpringBootTest
 public class UserRepositoryTests {
     @Autowired
@@ -41,7 +40,6 @@ public class UserRepositoryTests {
         assertEquals(newUser.getId(), userRepository.findById(newUser.getId()).get().getId());
     }
 
-
     @Test
     void baseUpdateOperations() {
         User updatedUser = userRepository.findAll().get(3);
@@ -51,13 +49,10 @@ public class UserRepositoryTests {
 
     }
 
-
-
     @Test
     void baseDeleteOperations() {
         User user = userRepository.findByLogin("Igor");
         userRepository.delete(user);
         assertEquals(3, userRepository.count());
     }
-
 }

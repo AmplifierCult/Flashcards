@@ -43,10 +43,12 @@ public class UserRepositoryTests {
 
 
     @Test
-    void baseUpdateOperations() { //TODO FIX ME
+    void baseUpdateOperations() {
         User updatedUser = userRepository.findAll().get(3);
-        updatedUser.setLogin("Ivan");
-        assertEquals(updatedUser.getId(), userRepository.findByLogin("Ivan").getId());
+        updatedUser.setLogin("Nick");
+        userRepository.save(updatedUser);
+        assertEquals(updatedUser.getId(), userRepository.findByLogin("Nick").getId());
+
     }
 
 

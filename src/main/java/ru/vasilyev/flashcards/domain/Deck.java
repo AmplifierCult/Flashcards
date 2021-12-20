@@ -11,7 +11,7 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "Deck_Card",
             joinColumns = {@JoinColumn(name = "Deck")},

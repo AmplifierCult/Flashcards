@@ -43,11 +43,11 @@ public class LoadDataBase {
 
 
     void initCardDatabase() {
-        Long authorId = userRepository.findByLogin("Andrey").getId();
-        log.info("Preloading " + cardRepository.save(new Card("Wood", authorId)));
-        log.info("Preloading " + cardRepository.save(new Card("Iron", authorId)));
-        log.info("Preloading " + cardRepository.save(new Card("Water", authorId)));
-        log.info("Preloading " + cardRepository.save(new Card("Rock", authorId)));
+        User author = userRepository.findByLogin("Andrey");
+        log.info("Preloading " + cardRepository.save(new Card("Wood", author)));
+        log.info("Preloading " + cardRepository.save(new Card("Iron", author)));
+        log.info("Preloading " + cardRepository.save(new Card("Water", author)));
+        log.info("Preloading " + cardRepository.save(new Card("Rock", author)));
     }
 
     void cleanCardDataBase() {
@@ -55,10 +55,15 @@ public class LoadDataBase {
     }
 
     void initStatisticsDatabase() {
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Low")));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Middle")));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("High")));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Perfect")));
+        User author = userRepository.findByLogin("Andrey");
+        Card firstCard = cardRepository.findByWord("Wood");
+        Card secondCard = cardRepository.findByWord("Iron");
+        Card thirdCard = cardRepository.findByWord("Water");
+        Card fourthCard = cardRepository.findByWord("Rock");
+        log.info("Preloading " + statisticsRepository.save(new Statistics("Low", author, firstCard)));
+        log.info("Preloading " + statisticsRepository.save(new Statistics("Middle", author, secondCard)));
+        log.info("Preloading " + statisticsRepository.save(new Statistics("High", author, thirdCard)));
+        log.info("Preloading " + statisticsRepository.save(new Statistics("Perfect", author, fourthCard)));
     }
 
     void cleanStatisticsDataBase() {
@@ -66,10 +71,11 @@ public class LoadDataBase {
     }
 
     void initDeckDatabase() {
-        log.info("Preloading " + deckRepository.save(new Deck("Metals")));
-        log.info("Preloading " + deckRepository.save(new Deck("Weather")));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of wood")));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of animals")));
+        User author = userRepository.findByLogin("Andrey");
+        log.info("Preloading " + deckRepository.save(new Deck("Metals", author)));
+        log.info("Preloading " + deckRepository.save(new Deck("Weather", author)));
+        log.info("Preloading " + deckRepository.save(new Deck("Types of wood", author)));
+        log.info("Preloading " + deckRepository.save(new Deck("Types of animals", author)));
     }
 
     void cleanDeckDataBase() {

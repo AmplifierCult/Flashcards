@@ -19,17 +19,17 @@ public class Card {
     @Column(name = "map_value")
     Map<String, String> exampleOfUse;
 
-  //  @ManyToOne(fetch = FetchType.EAGER)
- //   @JoinColumn(name = "author_id")
-    Long authorId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id")
+    User author;
     byte [] exampleOfPronunciation;
 
     protected Card() {
     }
 
-    public Card(String word, Long authorId) {
+    public Card(String word, User author) {
         this.word = word;
-        this.authorId = authorId;
+        this.author = author;
     }
 
     public Long getId() {
@@ -80,12 +80,12 @@ public class Card {
         this.exampleOfUse = exampleOfUse;
     }
 
-    public Long getAuthor() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthor(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     @Override
@@ -93,7 +93,8 @@ public class Card {
         return "Card{" +
                 "id=" + id +
                 ", word='" + word + '\'' +
-                ", author=" + authorId +
+                ", authorId=" + author.getId() +
+                ", authorName=" + author.getLogin() +
                 '}';
     }
 }

@@ -58,6 +58,7 @@ public class DeckController {
                     deck.setSharedAccess(newDeck.getSharedAccess());
                     deck.setCover(newDeck.getCover());
                     deck.setCreationDate(newDeck.getCreationDate());
+                    deck.setAuthor(newDeck.getAuthor());
                     return repository.save(deck);
                 })
                 .orElseGet(() -> {

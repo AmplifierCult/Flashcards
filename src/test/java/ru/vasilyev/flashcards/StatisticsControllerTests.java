@@ -44,8 +44,9 @@ public class StatisticsControllerTests {
 
     @BeforeEach
     void setUp() {
-        loadDataBase.initStatisticsDatabase();
+        loadDataBase.initUserDatabase();
         loadDataBase.initCardDatabase();
+        loadDataBase.initStatisticsDatabase();
     }
 
     @AfterEach
@@ -63,8 +64,12 @@ public class StatisticsControllerTests {
 
     @Test
     void statisticsControllerPostRequest() throws Exception {
+        User author = userRepository.findByLogin("Andrey");
+        Card newCard = new Card("Gold", author);
+        cardRepository.save(newCard);
+        Statistics newStatistics = new Statistics("Low", author, newCard);
         this.mockMvc.perform(post("/statistics")
-                        .content(objectMapper.writeValueAsString("Low"))
+                        .content(objectMapper.writeValueAsString(newStatistics))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -74,11 +79,11 @@ public class StatisticsControllerTests {
 
     @Test
     void statisticsControllerPutRequest() throws Exception {
-        Statistics newStatistics = new Statistics("High");
-        Long authorId = userRepository.findByLogin("Andrey").getId();
-        Card newCard = new Card("Gold", authorId);
+        User author = userRepository.findByLogin("Andrey");
+        Card newCard = new Card("Gold", author);
         cardRepository.save(newCard);
-        newStatistics.setCard(newCard);
+        Statistics newStatistics = new Statistics("High", author, newCard);
+
         Long id = statisticsRepository.findByKnowledgeLevel("Perfect").get(0).getId();
         this.mockMvc.perform(put("/statistics/{id}", id)
                         .content(objectMapper.writeValueAsString(newStatistics))

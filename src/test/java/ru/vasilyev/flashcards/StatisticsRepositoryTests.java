@@ -5,21 +5,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.Statistics;
+import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class StatisticsRepositoryTests {
     @Autowired
-    StatisticsRepository repository;
+    StatisticsRepository statisticsRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    CardRepository cardRepository;
 
     @Autowired
     LoadDataBase loadDataBase;
 
     @BeforeEach
     void setUp() {
+        loadDataBase.initUserDatabase();
+        loadDataBase.initCardDatabase();
         loadDataBase.initStatisticsDatabase();
     }
 
@@ -28,25 +40,33 @@ public class StatisticsRepositoryTests {
         loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
         loadDataBase.cleanUserDataBase();
-        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
-    void baseCRUDOperations() {
-        Statistics savedStatistics;
+    void baseCreateOperations() {
+        User author = userRepository.findByLogin("Andrey");
+        Card newCard = new Card("Gold", author);
+        cardRepository.save(newCard);
+        Statistics newStatistics = new Statistics("High", author, newCard);
 
-        //create
-        savedStatistics = repository.save(new Statistics("Low"));
-        assertEquals(5, repository.count());
-        assertEquals(savedStatistics.getId(), repository.findById(savedStatistics.getId()).get().getId());
+        statisticsRepository.save(newStatistics);
+        assertEquals(5, statisticsRepository.count());
+        assertEquals(newStatistics.getId(), statisticsRepository.findById(newStatistics.getId()).get().getId());
 
-        //update
-        savedStatistics.setKnowledgeLevel("Perfect");
-        repository.save(savedStatistics);
-        assertEquals(savedStatistics.getKnowledgeLevel(), repository.findById(savedStatistics.getId()).get().getKnowledgeLevel());
+    }
 
-        //delete
-        repository.delete(savedStatistics);
-        assertEquals(4, repository.count());
+    @Test
+    void baseUpdateOperations() {
+        Statistics statisticsForUpdate = statisticsRepository.findByKnowledgeLevel("Low").get(0);
+        statisticsForUpdate.setKnowledgeLevel("Perfect");
+        statisticsRepository.save(statisticsForUpdate);
+        assertEquals(statisticsForUpdate.getKnowledgeLevel(), statisticsRepository.findById(statisticsForUpdate.getId()).get().getKnowledgeLevel());
+    }
+
+    @Test
+    void baseDeleteOperations() {
+        Statistics statisticsForDelete = statisticsRepository.findByKnowledgeLevel("Low").get(0);
+        statisticsRepository.delete(statisticsForDelete);
+        assertEquals(3, statisticsRepository.count());
     }
 }

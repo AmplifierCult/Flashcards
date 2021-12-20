@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.vasilyev.flashcards.domain.Deck;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,41 +17,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class DeckRepositoryTests {
     @Autowired
-    DeckRepository repository;
+    DeckRepository deckRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     LoadDataBase loadDataBase;
 
     @BeforeEach
     void setUp() {
+        loadDataBase.initUserDatabase();
+        loadDataBase.initCardDatabase();
         loadDataBase.initDeckDatabase();
     }
 
     @AfterEach
     void tearDown() {
-        loadDataBase.cleanStatisticsDataBase();
+        loadDataBase.cleanDeckDataBase();
         loadDataBase.cleanCardDataBase();
         loadDataBase.cleanUserDataBase();
-        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
-    void baseCRUDOperations() {
-        Deck savedDeck;
+    void baseCreateOperations() {
+        User author = userRepository.findByLogin("Andrey");
+        Deck newDeck = new Deck("Coding", author);
 
-        //create
-        savedDeck = repository.save(new Deck("Coding"));
-        assertEquals(5, repository.count());
-        assertEquals(savedDeck.getDeckName(), repository.findByDeckName("Coding").getDeckName());
-        assertEquals(savedDeck.getId(), repository.findById(savedDeck.getId()).get().getId());
+        deckRepository.save(newDeck);
+        assertEquals(5, deckRepository.count());
+        assertEquals(newDeck.getDeckName(), deckRepository.findByDeckName("Coding").getDeckName());
+        assertEquals(newDeck.getId(), deckRepository.findById(newDeck.getId()).get().getId());
+    }
 
-        //update
-        savedDeck.setDeckName("Fishing");
-        repository.save(savedDeck);
-        assertEquals(savedDeck.getId(), repository.findByDeckName("Fishing").getId());
+    @Test
+    void baseUpdateOperations() {
+        Deck deck = deckRepository.findAll().get(2);
+        deck.setDeckName("Fishing");
+        deckRepository.save(deck);
+        assertEquals(deck.getId(), deckRepository.findByDeckName("Fishing").getId());
+    }
 
-        //delete
-        repository.delete(savedDeck);
-        assertEquals(4, repository.count());
+    @Test
+    void baseDeleteOperations() {
+        Deck deck = deckRepository.findAll().get(3);
+        deckRepository.delete(deck);
+        assertEquals(3, deckRepository.count());
     }
 }

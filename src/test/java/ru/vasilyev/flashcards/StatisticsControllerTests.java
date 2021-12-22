@@ -54,7 +54,6 @@ public class StatisticsControllerTests {
         loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
         loadDataBase.cleanUserDataBase();
-        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
@@ -63,10 +62,9 @@ public class StatisticsControllerTests {
     }
 
     @Test
-    void statisticsControllerPostRequest() throws Exception {
+    void statisticsControllerPostRequest() throws Exception { //TODO FIX ME
         User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Gold", author);
-        cardRepository.save(newCard);
+        Card newCard = cardRepository.findByWord("Rock");
         Statistics newStatistics = new Statistics("Low", author, newCard);
         this.mockMvc.perform(post("/statistics")
                         .content(objectMapper.writeValueAsString(newStatistics))

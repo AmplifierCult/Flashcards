@@ -1,19 +1,26 @@
 package ru.vasilyev.flashcards.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserRepository userRepository;
@@ -28,7 +35,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(User user, Long id) {
+    public User updateUser(User user, @Positive Long id) {
+        validateUser(user);
         return userRepository.findById(id)
                 .map(userForUpdate -> {
                     userForUpdate.setLogin(user.getLogin());
@@ -45,33 +53,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(@PathVariable Long id) {
+    public User getUserById(@Positive Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    public User getUserByLogin(String login) {
-        validateLogin(login);
+    public User getUserByLogin(@NotBlank(message = "login cannot be empty") String login) {
         return userRepository.findByLogin(login);
     }
 
-    private void validateLogin(String login) {
-        if(ObjectUtils.isEmpty(login)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a login.");
-        }
-    }
-
-
-    public void deleteUserById(Long id) {
-        validateId(id);
+    public void deleteUserById(@Positive Long id) {
         userRepository.deleteById(id);
     }
 
-    private void validateId(Long id) { //TODO реализовать
+    private void validateUser(User user) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        for (ConstraintViolation<User> violation : violations) {
+            log.error(violation.getMessage());
+        }
     }
-
-    private void validateUser(User user) { //TODO реализовать
-
-    }
-
 }

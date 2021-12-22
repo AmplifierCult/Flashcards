@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,8 +55,11 @@ public class UserControllerTests {
 
     @Test
     void userControllerPostRequests() throws Exception {
+        User newUser = new User("Mike");
+        newUser.setPassword("qwerty");
+        newUser.setRegistrationDate(Instant.now());
         this.mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString("Mike"))
+                        .content(objectMapper.writeValueAsString(newUser))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -66,6 +71,8 @@ public class UserControllerTests {
     void userControllerPutRequests() throws Exception {
         User newUser = new User("Arnold");
         newUser.setEmail("arnold123@mail.ru");
+        newUser.setPassword("12356");
+        newUser.setRegistrationDate(Instant.now());
         this.mockMvc.perform(put("/users/3")
                         .content(objectMapper.writeValueAsString(newUser))
                         .contentType(MediaType.APPLICATION_JSON)

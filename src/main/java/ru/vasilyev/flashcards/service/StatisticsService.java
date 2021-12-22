@@ -1,19 +1,27 @@
 package ru.vasilyev.flashcards.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Statistics;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class StatisticsService {
+
+    private static final Logger log = LoggerFactory.getLogger(StatisticsService.class);
 
     @Autowired
     StatisticsRepository statisticsRepository;
@@ -22,8 +30,7 @@ public class StatisticsService {
         return statisticsRepository.findAll();
     }
 
-    public Statistics getStatisticsById(Long id) {
-        validateId(id);
+    public Statistics getStatisticsById(@Positive Long id) {
         return statisticsRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Statistics not found."));
     }
@@ -48,9 +55,8 @@ public class StatisticsService {
         return statisticsRepository.save(newStatistics);
     }
 
-    public Statistics replaceStatistics(Statistics newStatistics, Long id) {
+    public Statistics replaceStatistics(Statistics newStatistics, @Positive Long id) {
         validateStatistics(newStatistics);
-        validateId(id);
         return statisticsRepository.findById(id)
                 .map(statistics -> {
                     statistics.setUser(newStatistics.getUser());
@@ -66,15 +72,18 @@ public class StatisticsService {
                 });
     }
 
-    private void validateStatistics(Statistics newStatistics) { //TODO реализовать
+    private void validateStatistics(Statistics statistics) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<Statistics>> violations = validator.validate(statistics);
+
+        for (ConstraintViolation<Statistics> violation : violations) {
+            log.error(violation.getMessage());
+        }
     }
 
-    public void deleteStatistics(Long id) {
-        validateId(id);
+    public void deleteStatistics(@Positive Long id) {
         statisticsRepository.deleteById(id);
     }
-
-    private void validateId(Long id) { //TODO реализовать
-    }
-
 }

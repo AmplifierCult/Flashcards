@@ -1,6 +1,5 @@
 package ru.vasilyev.flashcards.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,6 @@ public class DeckService {
         return deckRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Deck not found."));
     }
-
-
 
     public Deck getDeckByDeckName(String deckName) {
         validateDeckName(deckName);
@@ -76,5 +73,4 @@ public class DeckService {
 
     private void validateId(Long id) { //TODO реализовать
     }
-
 }

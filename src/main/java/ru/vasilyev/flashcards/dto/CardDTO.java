@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards.domain.dto;
+package ru.vasilyev.flashcards.dto;
 
 import ru.vasilyev.flashcards.domain.User;
 

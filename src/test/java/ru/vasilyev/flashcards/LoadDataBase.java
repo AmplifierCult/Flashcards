@@ -13,6 +13,8 @@ import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
+
 @Component
 public class LoadDataBase {
 
@@ -31,16 +33,30 @@ public class LoadDataBase {
     DeckRepository deckRepository;
 
     void initUserDatabase() {
-        log.info("Preloading " + userRepository.save(new User("Andrey")));
-        log.info("Preloading " + userRepository.save(new User("Ivan")));
-        log.info("Preloading " + userRepository.save(new User("Fedor")));
-        log.info("Preloading " + userRepository.save(new User("Igor")));
+        User firstUser = new User("Andrey");
+        firstUser.setPassword("qwerty");
+        firstUser.setRegistrationDate(Instant.now());
+        log.info("Preloading " + userRepository.save(firstUser));
+
+        User secondUser = new User("Ivan");
+        secondUser.setPassword("123456");
+        secondUser.setRegistrationDate(Instant.now());
+        log.info("Preloading " + userRepository.save(secondUser));
+
+        User thirdUser = new User("Fedor");
+        thirdUser.setPassword("asdf");
+        thirdUser.setRegistrationDate(Instant.now());
+        log.info("Preloading " + userRepository.save(thirdUser));
+
+        User fourthUser = new User("Igor");
+        fourthUser.setPassword("zxcv");
+        fourthUser.setRegistrationDate(Instant.now());
+        log.info("Preloading " + userRepository.save(fourthUser));
     }
 
     void cleanUserDataBase() {
         userRepository.deleteAll();
     }
-
 
     void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");

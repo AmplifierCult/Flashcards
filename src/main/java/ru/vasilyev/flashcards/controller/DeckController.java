@@ -2,12 +2,11 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Deck;
-import ru.vasilyev.flashcards.repository.DeckRepository;
+import ru.vasilyev.flashcards.service.DeckService;
 
 import java.util.List;
 
@@ -16,59 +15,37 @@ public class DeckController {
 
     private static final Logger log = LoggerFactory.getLogger(DeckController.class);
 
-    private final DeckRepository repository;
-
-    public DeckController(DeckRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    DeckService deckService;
 
     @GetMapping("/decks")
     List<Deck> all() {
-        return repository.findAll();
+        return deckService.getAllDecks();
     }
 
     @GetMapping("/decks/{id}")
     Deck getDeckById(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Deck not found."));
+        return deckService.getDeckById(id);
     }
 
     @GetMapping("/decks/search")
     Deck getDeckByDeckName(@RequestParam(value = "deckName", required = false) String deckName) {
-        if(ObjectUtils.isEmpty(deckName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a deck name.");
-        } else if(ObjectUtils.isEmpty(repository.findByDeckName(deckName))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Deck not found.");
-        } else return repository.findByDeckName(deckName);
+        return deckService.getDeckByDeckName(deckName);
     }
 
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
-    Deck newDeck(@RequestBody Deck newDeck) {
-        return repository.save(newDeck);
+    Deck createDeck(@RequestBody Deck newDeck) {
+        return deckService.createDeck(newDeck);
     }
 
     @PutMapping("/decks/{id}")
     Deck replaceDeck(@RequestBody Deck newDeck, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(deck -> {
-                    deck.setDeck(newDeck.getDeck());
-                    deck.setDeckName(newDeck.getDeckName());
-                    deck.setSharedAccess(newDeck.getSharedAccess());
-                    deck.setCover(newDeck.getCover());
-                    deck.setCreationDate(newDeck.getCreationDate());
-                    deck.setAuthor(newDeck.getAuthor());
-                    return repository.save(deck);
-                })
-                .orElseGet(() -> {
-                    newDeck.setId(id);
-                    return repository.save(newDeck);
-                });
+        return deckService.replaceDeck(newDeck, id);
     }
 
     @DeleteMapping("/decks/{id}")
     void deleteDeck(@PathVariable Long id) {
-        repository.deleteById(id);
+        deckService.deleteDeck(id);
     }
 }

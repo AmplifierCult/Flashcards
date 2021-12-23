@@ -36,21 +36,26 @@ public class LoadDataBase {
         User firstUser = new User("Andrey");
         firstUser.setPassword("qwerty");
         firstUser.setRegistrationDate(Instant.now());
+        firstUser.setLastActionDate(Instant.now());
+
         log.info("Preloading " + userRepository.save(firstUser));
 
         User secondUser = new User("Ivan");
         secondUser.setPassword("123456");
         secondUser.setRegistrationDate(Instant.now());
+        secondUser.setLastActionDate(Instant.now());
         log.info("Preloading " + userRepository.save(secondUser));
 
         User thirdUser = new User("Fedor");
         thirdUser.setPassword("asdf");
         thirdUser.setRegistrationDate(Instant.now());
+        thirdUser.setLastActionDate(Instant.now());
         log.info("Preloading " + userRepository.save(thirdUser));
 
         User fourthUser = new User("Igor");
         fourthUser.setPassword("zxcv");
         fourthUser.setRegistrationDate(Instant.now());
+        fourthUser.setLastActionDate(Instant.now());
         log.info("Preloading " + userRepository.save(fourthUser));
     }
 
@@ -60,10 +65,19 @@ public class LoadDataBase {
 
     void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        log.info("Preloading " + cardRepository.save(new Card("Wood", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Iron", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Water", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Rock", author)));
+        Card firstCard = new Card("Wood", author);
+        firstCard.setCreationDate(Instant.now());
+        Card secondCard = new Card("Iron", author);
+        secondCard.setCreationDate(Instant.now());
+        Card thirdCard = new Card("Water", author);
+        thirdCard.setCreationDate(Instant.now());
+        Card fourthCard = new Card("Rock", author);
+        fourthCard.setCreationDate(Instant.now());
+
+        log.info("Preloading " + cardRepository.save(firstCard));
+        log.info("Preloading " + cardRepository.save(secondCard));
+        log.info("Preloading " + cardRepository.save(thirdCard));
+        log.info("Preloading " + cardRepository.save(fourthCard));
     }
 
     void cleanCardDataBase() {

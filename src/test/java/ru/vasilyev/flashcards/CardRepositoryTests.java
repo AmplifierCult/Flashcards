@@ -1,5 +1,8 @@
 package ru.vasilyev.flashcards;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CardRepositoryTests {
     @Autowired
     CardRepository cardRepository;
+
+    @Autowired
+    SessionFactory factory;
 
     @Autowired
     UserRepository userRepository;
@@ -53,14 +59,24 @@ public class CardRepositoryTests {
 
     @Test
     void baseUpdateOperation() {
-        Card card = cardRepository.findByWord("Iron");
-        Map<String, String> exampleOfUse = new HashMap<>();
-        exampleOfUse.put(card.getWord(), "Humans stopped using stone because bronze and iron were superior materials.");
-        card.setExampleOfUse(exampleOfUse);
-        cardRepository.save(card);
-        assertEquals(card.getId(), cardRepository.findByWord("Iron").getId());
-        assertEquals(card.getExampleOfUse(), cardRepository.findById(card.getId()).get().getExampleOfUse());
-        assertEquals(4, cardRepository.count());
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+
+            Card card = cardRepository.findByWord("Iron");
+            Map<String, String> exampleOfUse = new HashMap<>();
+            exampleOfUse.put(card.getWord(), "Humans stopped using stone because bronze and iron were superior materials.");
+            card.setExampleOfUse(exampleOfUse);
+            cardRepository.save(card);
+            assertEquals(card.getId(), cardRepository.findByWord("Iron").getId());
+            assertEquals(card.getExampleOfUse(), cardRepository.findById(card.getId()).get().getExampleOfUse());
+            assertEquals(4, cardRepository.count());
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
     }
 
     @Test

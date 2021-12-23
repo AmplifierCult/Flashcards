@@ -11,8 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.CardDTO;
+import ru.vasilyev.flashcards.dto.DeckDTO;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.service.DeckService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,6 +33,12 @@ public class DeckControllerTests {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    DeckService deckService;
+
+    @Autowired
+    DeckDTO deckDTOMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -58,11 +67,9 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerPostRequests() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Deck newDeck = new Deck("Engineering", author);
-
+        Deck newDeck = new Deck("Engineering");
         this.mockMvc.perform(post("/decks")
-                        .content(objectMapper.writeValueAsString(newDeck))
+                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(newDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -72,11 +79,11 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerPutRequests() throws Exception {
-        Deck replacedDeck = deckRepository.findByDeckName("Types of animals");
+        Deck replacedDeck = deckService.getDeckByDeckName("Types of animals");
         replacedDeck.setDeckName("Space");
         Long id = replacedDeck.getId();
         this.mockMvc.perform(put("/decks/{id}", id)
-                        .content(objectMapper.writeValueAsString(replacedDeck))
+                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(replacedDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())

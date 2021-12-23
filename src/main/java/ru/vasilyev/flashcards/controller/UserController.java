@@ -4,11 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.service.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,30 +25,35 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserDTO userDTOMapper;
+
     @GetMapping("/users")
-    List<User> all() {
-        return userService.getAllUsers();
+    List<UserDTO> all() {
+        return userService.getAllUsers().stream().map(userDTOMapper::mapToUserDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/users/{id}")
-    User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    UserDTO getUserById(@PathVariable Long id) {
+        return userDTOMapper.mapToUserDTO(userService.getUserById(id));
     }
 
     @GetMapping("/users/search")
-    User getUserByLogin(@RequestParam(value = "login", required = false) String login) {
-        return userService.getUserByLogin(login);
+    UserDTO getUserByLogin(@RequestParam(value = "login", required = false) String login) {
+        return userDTOMapper.mapToUserDTO(userService.getUserByLogin(login));
     }
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    User newUser(@RequestBody User newUser) {
-        return userService.createUser(newUser);
+    UserDTO newUser(@RequestBody @Validated UserDTO newUserDTO) {
+        User newUser = userDTOMapper.mapToUser(newUserDTO);
+        return userDTOMapper.mapToUserDTO(userService.createUser(newUser));
     }
 
     @PutMapping("/users/{id}")
-    User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
-        return userService.updateUser(newUser, id);
+    UserDTO replaceUser(@RequestBody UserDTO newUserDTO, @PathVariable Long id) {
+        User newUser = userDTOMapper.mapToUser(newUserDTO);
+        return userDTOMapper.mapToUserDTO(userService.updateUser(newUser, id));
     }
 
     @DeleteMapping("/user/{id}")

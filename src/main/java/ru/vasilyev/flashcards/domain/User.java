@@ -15,6 +15,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "login cannot be empty")
+    @Column(unique = true)
     private String login;
 
     @NotBlank(message = "password cannot be empty")
@@ -27,7 +28,7 @@ public class User {
 
     private Instant lastActionDate;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "User_Deck",
             joinColumns = {@JoinColumn(name = "User")},

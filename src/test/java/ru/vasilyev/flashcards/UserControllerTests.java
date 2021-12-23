@@ -11,9 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.service.DeckService;
+import ru.vasilyev.flashcards.service.UserService;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,7 +31,13 @@ public class UserControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
+
+    @Autowired
+    DeckService deckService;
+
+    @Autowired
+    UserDTO userDTOMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -38,14 +48,16 @@ public class UserControllerTests {
     @BeforeEach
     void setUp() {
         loadDataBase.initUserDatabase();
+        loadDataBase.initDeckDatabase();
+
     }
 
     @AfterEach
     void tearDown() {
         loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
-        loadDataBase.cleanUserDataBase();
         loadDataBase.cleanDeckDataBase();
+        loadDataBase.cleanUserDataBase();
     }
 
     @Test
@@ -58,8 +70,10 @@ public class UserControllerTests {
         User newUser = new User("Mike");
         newUser.setPassword("qwerty");
         newUser.setRegistrationDate(Instant.now());
+        newUser.setLastActionDate(Instant.now());
+        newUser.setDecks(List.of(deckService.getDeckByDeckName("Metals")));
         this.mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(newUser))
+                        .content(objectMapper.writeValueAsString(userDTOMapper.mapToUserDTO(newUser)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -73,8 +87,11 @@ public class UserControllerTests {
         newUser.setEmail("arnold123@mail.ru");
         newUser.setPassword("12356");
         newUser.setRegistrationDate(Instant.now());
-        this.mockMvc.perform(put("/users/3")
-                        .content(objectMapper.writeValueAsString(newUser))
+        newUser.setLastActionDate(Instant.now());
+        Long id = userService.getUserByLogin("Fedor").getId();
+        newUser.setDecks(List.of(deckService.getDeckByDeckName("Metals")));
+        this.mockMvc.perform(put("/users/{id}", id)
+                        .content(objectMapper.writeValueAsString(userDTOMapper.mapToUserDTO(newUser)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())
@@ -84,7 +101,7 @@ public class UserControllerTests {
 
     @Test
     void userControllerDeleteRequests() throws Exception {
-        Long id = userRepository.findByLogin("Igor").getId();
+        Long id = userService.getUserByLogin("Igor").getId();
         this.mockMvc.perform(delete("/user/{id}", id)).andExpect(status().isOk());
         this.mockMvc.perform(get("/user/{id}", id)).andExpect(status().isMethodNotAllowed());
     }

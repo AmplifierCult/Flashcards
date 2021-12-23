@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Deck;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
+import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -15,6 +18,9 @@ public class DeckService {
 
     @Autowired
     DeckRepository deckRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     public List<Deck> getAllDecks() {
         return deckRepository.findAll();
@@ -41,6 +47,7 @@ public class DeckService {
 
     public Deck createDeck(Deck newDeck) {
         validateDeck(newDeck);
+        newDeck.setAuthor(assignAuthor());
         return deckRepository.save(newDeck);
     }
 
@@ -73,4 +80,12 @@ public class DeckService {
 
     private void validateId(Long id) { //TODO реализовать
     }
+
+    private User assignAuthor() {
+        User user = new User("Mick");
+        user.setPassword("qwerty");
+        user.setRegistrationDate(Instant.now());
+        return userRepository.save(user);
+    }
+
 }

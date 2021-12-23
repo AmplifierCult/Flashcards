@@ -20,6 +20,7 @@ public class DeckController {
 
     @GetMapping("/decks")
     List<Deck> all() {
+
         return deckService.getAllDecks();
     }
 

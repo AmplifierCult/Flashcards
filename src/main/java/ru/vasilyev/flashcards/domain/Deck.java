@@ -32,6 +32,10 @@ public class Deck {
     protected Deck() {
     }
 
+    public Deck(String deckName) {
+        this.deckName = deckName;
+    }
+
     public Deck(String deckName, User author) {
         this.deckName = deckName;
         this.author = author;

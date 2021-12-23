@@ -14,7 +14,7 @@ public class Card {
     String word;
     String translatedWord;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable
     @MapKeyColumn(name = "map_key")
     @Column(name = "map_value")
@@ -28,6 +28,10 @@ public class Card {
     Instant creationDate;
 
     protected Card() {
+    }
+
+    public Card(String word) {
+        this.word = word;
     }
 
     public Card(String word, User author) {

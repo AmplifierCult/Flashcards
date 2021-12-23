@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.dto.CardDTO;
 import ru.vasilyev.flashcards.service.CardService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class CardController {
@@ -18,31 +20,35 @@ public class CardController {
     @Autowired
     CardService cardService;
 
+    @Autowired
+    CardDTO cardDTOMapper;
+
     @GetMapping("/cards")
-    List<Card> all() {
-        return cardService.getAllCards();
+    List<CardDTO> all() {
+        return cardService.getAllCards().stream().map(cardDTOMapper::mapToCardDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/cards/{id}")
-    Card getCardById(@PathVariable Long id) {
-        return cardService.getCardById(id);
+    CardDTO getCardById(@PathVariable Long id) {
+        return cardDTOMapper.mapToCardDTO(cardService.getCardById(id));
     }
 
     @GetMapping("/cards/search")
-    Card getCardByWord(@RequestParam(value = "word", required = false) String word) {
-        return cardService.getCardByWord(word);
+    CardDTO getCardByWord(@RequestParam(value = "word", required = false) String word) {
+        return cardDTOMapper.mapToCardDTO(cardService.getCardByWord(word));
     }
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
-    Card createCard(@RequestBody Card newCard) {
-        return cardService.createCard(newCard);
+    CardDTO createCard(@RequestBody CardDTO newCardDTO) {
+        Card newCard = cardDTOMapper.mapToCard(newCardDTO);
+        return cardDTOMapper.mapToCardDTO(cardService.createCard(newCard));
     }
 
-
     @PutMapping("/cards/{id}")
-    Card replaceCard(@RequestBody Card newCard, @PathVariable Long id) {
-        return cardService.replaceCard(newCard, id);
+    CardDTO replaceCard(@RequestBody CardDTO newCardDTO, @PathVariable Long id) {
+        Card newCard = cardDTOMapper.mapToCard(newCardDTO);
+        return cardDTOMapper.mapToCardDTO(cardService.replaceCard(newCard, id));
     }
 
     @DeleteMapping("/cards/{id}")

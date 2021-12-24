@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
-import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
 import javax.validation.ConstraintViolation;
@@ -15,9 +14,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -27,9 +26,6 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    UserDTO userDTOMapper;
-
     public boolean authorize(User user) { //TODO реализовать
         validateUser(user);
         return false;
@@ -37,6 +33,7 @@ public class UserService {
 
     public User createUser(User user){
         validateUser(user);
+        user.setRegistrationDate(Instant.now());
         return userRepository.save(user);
     }
 

@@ -10,11 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.domain.Deck;
-import ru.vasilyev.flashcards.domain.User;
-import ru.vasilyev.flashcards.dto.CardDTO;
 import ru.vasilyev.flashcards.dto.DeckDTO;
 import ru.vasilyev.flashcards.repository.DeckRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
 import ru.vasilyev.flashcards.service.DeckService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,9 +27,6 @@ public class DeckControllerTests {
 
     @Autowired
     DeckRepository deckRepository;
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     DeckService deckService;

@@ -12,6 +12,8 @@ import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -46,6 +48,8 @@ public class StatisticsRepositoryTests {
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
         Card newCard = new Card("Gold", author);
+        newCard.setCreationDate(Instant.now());
+        newCard.setTranslatedWord("Золото");
         cardRepository.save(newCard);
         Statistics newStatistics = new Statistics("High", author, newCard);
 

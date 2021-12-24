@@ -1,20 +1,30 @@
 package ru.vasilyev.flashcards.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DeckService {
+
+    private static final Logger log = LoggerFactory.getLogger(DeckService.class);
 
     @Autowired
     DeckRepository deckRepository;
@@ -26,33 +36,23 @@ public class DeckService {
         return deckRepository.findAll();
     }
 
-    public Deck getDeckById(Long id) {
-        validateId(id);
+    public Deck getDeckById(@Positive Long id) {
         return deckRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Deck not found."));
     }
 
-    public Deck getDeckByDeckName(String deckName) {
-        validateDeckName(deckName);
+    public Deck getDeckByDeckName(@NotBlank(message = "deckName cannot be empty") String deckName) {
         return deckRepository.findByDeckName(deckName);
     }
 
-    private void validateDeckName(String deckName) {
-        if(ObjectUtils.isEmpty(deckName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a deck name.");
-        } else if(ObjectUtils.isEmpty(deckRepository.findByDeckName(deckName))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Deck not found.");
-        }
-    }
-
     public Deck createDeck(Deck newDeck) {
-        validateDeck(newDeck);
         newDeck.setAuthor(assignAuthor());
+        newDeck.setCreationDate(Instant.now());
+        validateDeck(newDeck);
         return deckRepository.save(newDeck);
     }
 
-    public Deck replaceDeck(Deck newDeck, Long id) {
-        validateId(id);
+    public Deck replaceDeck(Deck newDeck, @Positive Long id) {
         validateDeck(newDeck);
         return deckRepository.findById(id)
                 .map(deck -> {
@@ -70,15 +70,19 @@ public class DeckService {
                 });
     }
 
-    private void validateDeck(Deck newDeck) { //TODO реализовать
+    private void validateDeck(Deck deck) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<Deck>> violations = validator.validate(deck);
+
+        for (ConstraintViolation<Deck> violation : violations) {
+            log.error(violation.getMessage());
+        }
     }
 
-    public void deleteDeck(Long id) {
-        validateId(id);
+    public void deleteDeck(@Positive Long id) {
         deckRepository.deleteById(id);
-    }
-
-    private void validateId(Long id) { //TODO реализовать
     }
 
     private User assignAuthor() {

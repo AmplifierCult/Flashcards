@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 
@@ -11,7 +13,11 @@ public class Card {
     private Long id;
 
     byte [] image;
+
+    @NotBlank(message = "word cannot be empty")
     String word;
+
+    @NotBlank(message = "translatedWord cannot be empty")
     String translatedWord;
 
     @ElementCollection
@@ -20,11 +26,13 @@ public class Card {
     @Column(name = "map_value")
     Map<String, String> exampleOfUse;
 
+    @NotNull(message = "author cannot be null")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     User author;
     byte [] exampleOfPronunciation;
 
+    @NotNull(message = "creationDate cannot be null")
     Instant creationDate;
 
     protected Card() {

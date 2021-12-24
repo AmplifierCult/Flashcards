@@ -92,14 +92,21 @@ public class UserDTO {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setLogin(user.getLogin());
+        userDTO.setPassword(user.getPassword());
         userDTO.setEmail(user.getEmail());
         userDTO.setRegistrationDate(user.getRegistrationDate().toString());
-        userDTO.setLastActionDate(user.getLastActionDate().toString());
-        userDTO.setDeckNames(user.getDecks().stream().map(Deck::getDeckName).collect(Collectors.toList()));
+
+        if (userDTO.getLastActionDate() != null) {
+            userDTO.setLastActionDate(user.getLastActionDate().toString());
+        }
+
+        if (userDTO.getDeckNames() != null) {
+            userDTO.setDeckNames(user.getDecks().stream().map(Deck::getDeckName).collect(Collectors.toList()));
+        }
         return userDTO;
     }
 
-    public User mapToUser(@Validated UserDTO userDTO){
+    public User mapToUser(UserDTO userDTO){
         String login = userDTO.getLogin();
         User user = new User(login);
         user.setPassword(userDTO.getPassword());

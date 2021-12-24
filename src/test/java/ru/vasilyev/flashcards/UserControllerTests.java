@@ -67,13 +67,11 @@ public class UserControllerTests {
 
     @Test
     void userControllerPostRequests() throws Exception {
-        User newUser = new User("Mike");
-        newUser.setPassword("qwerty");
-        newUser.setRegistrationDate(Instant.now());
-        newUser.setLastActionDate(Instant.now());
-        newUser.setDecks(List.of(deckService.getDeckByDeckName("Metals")));
+        UserDTO newUserDTO = new UserDTO();
+        newUserDTO.setLogin("Mike");
+        newUserDTO.setPassword("qwerty");
         this.mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(userDTOMapper.mapToUserDTO(newUser)))
+                        .content(objectMapper.writeValueAsString(newUserDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())

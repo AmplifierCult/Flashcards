@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Deck;
+import ru.vasilyev.flashcards.dto.DeckDTO;
 import ru.vasilyev.flashcards.service.DeckService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class DeckController {
@@ -18,31 +20,35 @@ public class DeckController {
     @Autowired
     DeckService deckService;
 
-    @GetMapping("/decks")
-    List<Deck> all() {
+    @Autowired
+    DeckDTO deckDTOMapper;
 
-        return deckService.getAllDecks();
+    @GetMapping("/decks")
+    List<DeckDTO> all() {
+        return deckService.getAllDecks().stream().map(deckDTOMapper::mapToDeckDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/decks/{id}")
-    Deck getDeckById(@PathVariable Long id) {
-        return deckService.getDeckById(id);
+    DeckDTO getDeckById(@PathVariable Long id) {
+        return deckDTOMapper.mapToDeckDTO(deckService.getDeckById(id));
     }
 
     @GetMapping("/decks/search")
-    Deck getDeckByDeckName(@RequestParam(value = "deckName", required = false) String deckName) {
-        return deckService.getDeckByDeckName(deckName);
+    DeckDTO getDeckByDeckName(@RequestParam(value = "deckName", required = false) String deckName) {
+        return deckDTOMapper.mapToDeckDTO(deckService.getDeckByDeckName(deckName));
     }
 
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
-    Deck createDeck(@RequestBody Deck newDeck) {
-        return deckService.createDeck(newDeck);
+    DeckDTO createDeck(@RequestBody DeckDTO newDeckDTO) {
+        Deck newDeck = deckDTOMapper.mapToDeck(newDeckDTO);
+        return deckDTOMapper.mapToDeckDTO(deckService.createDeck(newDeck));
     }
 
     @PutMapping("/decks/{id}")
-    Deck replaceDeck(@RequestBody Deck newDeck, @PathVariable Long id) {
-        return deckService.replaceDeck(newDeck, id);
+    DeckDTO replaceDeck(@RequestBody DeckDTO newDeckDTO, @PathVariable Long id) {
+        Deck replacedDeck = deckService.replaceDeck(deckDTOMapper.mapToDeck(newDeckDTO), id);
+        return deckDTOMapper.mapToDeckDTO(replacedDeck);
     }
 
     @DeleteMapping("/decks/{id}")

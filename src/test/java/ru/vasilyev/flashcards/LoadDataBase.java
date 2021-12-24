@@ -66,12 +66,17 @@ public class LoadDataBase {
     void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");
         Card firstCard = new Card("Wood", author);
+        firstCard.setTranslatedWord("Древесина");
         firstCard.setCreationDate(Instant.now());
+
         Card secondCard = new Card("Iron", author);
+        secondCard.setTranslatedWord("Железо");
         secondCard.setCreationDate(Instant.now());
         Card thirdCard = new Card("Water", author);
+        thirdCard.setTranslatedWord("Вода");
         thirdCard.setCreationDate(Instant.now());
         Card fourthCard = new Card("Rock", author);
+        fourthCard.setTranslatedWord("Камень");
         fourthCard.setCreationDate(Instant.now());
 
         log.info("Preloading " + cardRepository.save(firstCard));
@@ -102,10 +107,19 @@ public class LoadDataBase {
 
     void initDeckDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        log.info("Preloading " + deckRepository.save(new Deck("Metals", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Weather", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of wood", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of animals", author)));
+        Deck firstDeck = new Deck("Metals", author);
+        firstDeck.setCreationDate(Instant.now());
+        Deck secondDeck = new Deck("Weather", author);
+        secondDeck.setCreationDate(Instant.now());
+        Deck thirdDeck = new Deck("Types of wood", author);
+        thirdDeck.setCreationDate(Instant.now());
+        Deck fourthDeck = new Deck("Types of animals", author);
+        fourthDeck.setCreationDate(Instant.now());
+
+        log.info("Preloading " + deckRepository.save(firstDeck));
+        log.info("Preloading " + deckRepository.save(secondDeck));
+        log.info("Preloading " + deckRepository.save(thirdDeck));
+        log.info("Preloading " + deckRepository.save(fourthDeck));
     }
 
     void cleanDeckDataBase() {

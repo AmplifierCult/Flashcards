@@ -5,15 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
+import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.Statistics;
+import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +28,12 @@ public class StatisticsService {
     @Autowired
     StatisticsRepository statisticsRepository;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CardService cardService;
+
     public List<Statistics> getAllStatistics() {
         return statisticsRepository.findAll();
     }
@@ -35,24 +43,23 @@ public class StatisticsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Statistics not found."));
     }
 
-
-
-    public List<Statistics> getStatisticsByKnowledgeLevel(String knowledgeLevel) {
-        validateKnowledgeLevel(knowledgeLevel);
+    public List<Statistics> getStatisticsByKnowledgeLevel(@NotBlank(message = "knowledgeLevel cannot be empty") String knowledgeLevel) {
         return statisticsRepository.findByKnowledgeLevel(knowledgeLevel);
     }
 
-    private void validateKnowledgeLevel(String knowledgeLevel) {
-        if(ObjectUtils.isEmpty(knowledgeLevel)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a knowledge level.");
-        } else if(ObjectUtils.isEmpty(statisticsRepository.findByKnowledgeLevel(knowledgeLevel))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Statistics not found.");
-        }
-    }
-
     public Statistics createStatistics(Statistics newStatistics) {
+        newStatistics.setUser(assignUser());
+        newStatistics.setCard(assignCard());
         validateStatistics(newStatistics);
         return statisticsRepository.save(newStatistics);
+    }
+
+    private User assignUser() {
+        return userService.getUserByLogin("Fedor");
+    }
+
+    private Card assignCard() {
+        return cardService.getCardByWord("Iron");
     }
 
     public Statistics replaceStatistics(Statistics newStatistics, @Positive Long id) {
@@ -86,4 +93,6 @@ public class StatisticsService {
     public void deleteStatistics(@Positive Long id) {
         statisticsRepository.deleteById(id);
     }
+
+
 }

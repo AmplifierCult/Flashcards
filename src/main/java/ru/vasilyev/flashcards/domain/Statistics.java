@@ -37,6 +37,10 @@ public class Statistics {
     protected Statistics() {
     }
 
+    public Statistics(String knowledgeLevel) {
+        this.knowledgeLevel = knowledgeLevel;
+    }
+
     public Statistics(String knowledgeLevel, User user, Card card) {
         this.knowledgeLevel = knowledgeLevel;
         this.user = user;
@@ -63,7 +67,7 @@ public class Statistics {
         return card;
     }
 
-    public void setCard(Card cardId) {
+    public void setCard(Card card) {
         this.card = card;
     }
 

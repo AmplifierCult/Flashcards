@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -20,11 +22,16 @@ public class Deck {
     @OrderColumn
     List<Card> deck;
 
+    @NotBlank(message = "deckName cannot be empty")
     String deckName;
+
     Boolean sharedAccess;
     byte [] cover;
+
+    @NotNull(message = "creationDate cannot be null")
     Instant creationDate;
 
+    @NotNull(message = "author cannot be null")
     @ManyToOne
     @JoinColumn(name = "author_id")
     User author;

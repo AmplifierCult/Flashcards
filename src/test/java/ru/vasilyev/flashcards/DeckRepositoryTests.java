@@ -11,6 +11,8 @@ import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -43,7 +45,7 @@ public class DeckRepositoryTests {
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
         Deck newDeck = new Deck("Coding", author);
-
+        newDeck.setCreationDate(Instant.now());
         deckRepository.save(newDeck);
         assertEquals(5, deckRepository.count());
         assertEquals(newDeck.getDeckName(), deckRepository.findByDeckName("Coding").getDeckName());

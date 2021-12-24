@@ -1,11 +1,9 @@
 package ru.vasilyev.flashcards.dto;
 
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 import ru.vasilyev.flashcards.domain.Card;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Component
@@ -67,7 +65,7 @@ public class CardDTO {
         return exampleOfUse;
     }
 
-    public void setExampleOfUse(@NotNull Map<String, String> exampleOfUse) {
+    public void setExampleOfUse(Map<String, String> exampleOfUse) {
         this.exampleOfUse = exampleOfUse;
     }
 
@@ -95,26 +93,51 @@ public class CardDTO {
         this.creationDate = creationDate;
     }
 
-    public CardDTO mapToCardDTO(Card card){
+    public CardDTO mapToCardDTO(Card card) {
         CardDTO cardDTO = new CardDTO();
         cardDTO.setId(card.getId());
-        cardDTO.setImage(card.getImage());
+
+        if(card.getImage() != null) {
+            cardDTO.setImage(card.getImage());
+        }
+
         cardDTO.setWord(card.getWord());
         cardDTO.setTranslatedWord(card.getTranslatedWord());
-        cardDTO.setExampleOfUse(card.getExampleOfUse());
+
+        if(card.getExampleOfUse() != null) {
+            cardDTO.setExampleOfUse(card.getExampleOfUse());
+        }
+
         cardDTO.setAuthorId(card.getAuthor().getId());
-        cardDTO.setExampleOfPronunciation(card.getExampleOfPronunciation());
+
+        if(card.getExampleOfPronunciation() != null) {
+            cardDTO.setExampleOfPronunciation(card.getExampleOfPronunciation());
+        }
+
         cardDTO.setCreationDate(card.getCreationDate().toString());
         return cardDTO;
     }
 
-    public Card mapToCard(@Validated CardDTO cardDTO){
+    public Card mapToCard(CardDTO cardDTO){
         String word = cardDTO.getWord();
         Card card = new Card(word);
-        card.setImage(cardDTO.getImage());
-        card.setTranslatedWord(cardDTO.getTranslatedWord());
-        card.setExampleOfUse(cardDTO.getExampleOfUse());
-        card.setExampleOfPronunciation(cardDTO.getExampleOfPronunciation());
+
+        if(cardDTO.getTranslatedWord() != null) {
+            card.setTranslatedWord(cardDTO.getTranslatedWord());
+        }
+
+        if(cardDTO.getImage() != null) {
+            card.setImage(cardDTO.getImage());
+        }
+
+        if(cardDTO.getExampleOfUse() != null) {
+            card.setExampleOfUse(cardDTO.getExampleOfUse());
+        }
+
+        if(cardDTO.getExampleOfPronunciation() != null) {
+            card.setExampleOfPronunciation(cardDTO.getExampleOfPronunciation());
+        }
+
         return card;
     }
 }

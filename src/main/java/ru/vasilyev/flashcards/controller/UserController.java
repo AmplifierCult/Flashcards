@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.dto.UserDTO;
@@ -45,9 +44,10 @@ public class UserController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO newUser(@RequestBody @Validated UserDTO newUserDTO) {
+    UserDTO newUser(@RequestBody UserDTO newUserDTO) {
         User newUser = userDTOMapper.mapToUser(newUserDTO);
-        return userDTOMapper.mapToUserDTO(userService.createUser(newUser));
+        User createdUser = userService.createUser(newUser);
+        return userDTOMapper.mapToUserDTO(createdUser);
     }
 
     @PutMapping("/users/{id}")

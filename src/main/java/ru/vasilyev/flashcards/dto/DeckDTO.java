@@ -90,59 +90,5 @@ public class DeckDTO {
         this.authorId = authorId;
     }
 
-    public DeckDTO mapToDeckDTO(Deck deck) {
-        DeckDTO deckDTO = new DeckDTO();
-        deckDTO.setId(deck.getId());
 
-        if(deck.getDeck() != null) {
-            deckDTO.setDeckOfCardsId(deck.getDeck().stream().map(Card::getId).collect(Collectors.toList()));
-        }
-
-        deckDTO.setDeckName(deck.getDeckName());
-
-        if(deck.getSharedAccess() != null) {
-            deckDTO.setSharedAccess(deck.getSharedAccess());
-        }
-
-        if(deck.getCover() != null) {
-            deckDTO.setCover(deck.getCover());
-        }
-
-        if(deck.getCreationDate() != null) {
-            deckDTO.setCreationDate(deck.getCreationDate().toString());
-        }
-
-        if(deck.getAuthor() != null) {
-            deckDTO.setAuthorId(deck.getAuthor().getId());
-        }
-
-        return deckDTO;
-    }
-
-    public Deck mapToDeck(DeckDTO deckDTO) {
-        String name = deckDTO.getDeckName();
-        Deck deck = new Deck(name);
-
-        if(deckDTO.getDeckOfCardsId() != null) {
-            deck.setDeck(deckDTO.getDeckOfCardsId().stream().map(cardService::getCardById).collect(Collectors.toList()));
-        }
-
-        if(deckDTO.getSharedAccess() != null) {
-            deck.setSharedAccess(deckDTO.getSharedAccess());
-        }
-
-        if(deckDTO.getCover() != null) {
-            deck.setCover(deckDTO.getCover());
-        }
-
-        if(deckDTO.getAuthorId() != null) {
-            deck.setAuthor(userService.getUserById(deckDTO.getAuthorId()));
-        }
-
-        if(deckDTO.getCreationDate() != null) {
-            deck.setCreationDate(Instant.parse(deckDTO.getCreationDate()));
-        }
-
-        return deck;
-    }
 }

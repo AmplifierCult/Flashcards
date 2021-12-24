@@ -1,10 +1,11 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.user;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class UserRepositoryTests {
+
     @Autowired
     UserRepository userRepository;
 
@@ -50,7 +52,6 @@ public class UserRepositoryTests {
         updatedUser.setLogin("Nick");
         userRepository.save(updatedUser);
         assertEquals(updatedUser.getId(), userRepository.findByLogin("Nick").getId());
-
     }
 
     @Test

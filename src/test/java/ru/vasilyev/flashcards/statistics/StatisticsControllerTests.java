@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.statistics;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -9,16 +9,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Statistics;
-import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.StatisticsDTO;
-import ru.vasilyev.flashcards.repository.CardRepository;
-import ru.vasilyev.flashcards.repository.StatisticsRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
-import ru.vasilyev.flashcards.service.CardService;
 import ru.vasilyev.flashcards.service.StatisticsService;
-import ru.vasilyev.flashcards.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,7 +27,7 @@ public class StatisticsControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    StatisticsDTO statisticsDTOMapper;
+    MappingUtils statisticsDTOMapper;
 
     @Autowired
     StatisticsService statisticsService;

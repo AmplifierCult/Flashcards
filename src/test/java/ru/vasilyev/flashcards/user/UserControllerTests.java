@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -10,7 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.repository.UserRepository;
 import ru.vasilyev.flashcards.service.DeckService;
@@ -37,7 +39,7 @@ public class UserControllerTests {
     DeckService deckService;
 
     @Autowired
-    UserDTO userDTOMapper;
+    MappingUtils userDTOMapper;
 
     @Autowired
     MockMvc mockMvc;

@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.сard;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.CardRepository;
@@ -25,9 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CardRepositoryTests {
     @Autowired
     CardRepository cardRepository;
-
-    @Autowired
-    SessionFactory factory;
 
     @Autowired
     UserRepository userRepository;

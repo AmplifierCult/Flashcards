@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Statistics;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.StatisticsDTO;
 import ru.vasilyev.flashcards.service.StatisticsService;
 
@@ -21,7 +22,7 @@ public class StatisticsController {
     StatisticsService statisticsService;
 
     @Autowired
-    StatisticsDTO statisticsDTOMapper;
+    MappingUtils statisticsDTOMapper;
 
     @GetMapping("/statistics")
     List<StatisticsDTO> all() {

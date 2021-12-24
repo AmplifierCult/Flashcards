@@ -1,13 +1,9 @@
 package ru.vasilyev.flashcards.dto;
 
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import ru.vasilyev.flashcards.domain.Deck;
-import ru.vasilyev.flashcards.domain.User;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UserDTO {
@@ -86,31 +82,5 @@ public class UserDTO {
 
     public void setDeckNames(List<String> deckNames) {
         this.deckNames = deckNames;
-    }
-
-    public UserDTO mapToUserDTO(User user){
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setLogin(user.getLogin());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setRegistrationDate(user.getRegistrationDate().toString());
-
-        if (userDTO.getLastActionDate() != null) {
-            userDTO.setLastActionDate(user.getLastActionDate().toString());
-        }
-
-        if (userDTO.getDeckNames() != null) {
-            userDTO.setDeckNames(user.getDecks().stream().map(Deck::getDeckName).collect(Collectors.toList()));
-        }
-        return userDTO;
-    }
-
-    public User mapToUser(UserDTO userDTO){
-        String login = userDTO.getLogin();
-        User user = new User(login);
-        user.setPassword(userDTO.getPassword());
-        user.setEmail(userDTO.getEmail());
-        return user;
     }
 }

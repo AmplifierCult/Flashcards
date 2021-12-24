@@ -83,51 +83,5 @@ public class StatisticsDTO {
         this.history = history;
     }
 
-    public StatisticsDTO mapToStatisticsDTO(Statistics statistics) {
-        StatisticsDTO statisticsDTO = new StatisticsDTO();
 
-        statisticsDTO.setId(statistics.getId());
-
-        if(statistics.getUser() != null) {
-            statisticsDTO.setUserId(statistics.getUser().getId());
-        }
-
-        if(statistics.getCard() != null) {
-            statisticsDTO.setCardId(statistics.getCard().getId());
-        }
-
-        if(statistics.getLastRecurrenceDate() != null) {
-            statisticsDTO.setLastRecurrenceDate(statistics.getLastRecurrenceDate().toString());
-        }
-
-        statisticsDTO.setKnowledgeLevel(statistics.getKnowledgeLevel());
-
-        if(statistics.getHistory() != null) {
-            statisticsDTO.setHistory(statistics.getHistory());
-        }
-
-        return statisticsDTO;
-    }
-
-    public Statistics mapToStatistics(StatisticsDTO statisticsDTO) {
-        Statistics statistics = new Statistics(statisticsDTO.getKnowledgeLevel());
-
-        if(statisticsDTO.getCardId() != null) {
-            statistics.setCard(cardService.getCardById(statisticsDTO.getCardId()));
-        }
-
-        if(statisticsDTO.getUserId() != null) {
-            statistics.setUser(userService.getUserById(statisticsDTO.getUserId()));
-        }
-
-        if(statisticsDTO.getLastRecurrenceDate() != null) {
-            statistics.setLastRecurrenceDate(Instant.parse(statisticsDTO.getLastRecurrenceDate()));
-        }
-
-        if(statisticsDTO.getHistory() != null) {
-            statistics.setHistory(statisticsDTO.getHistory());
-        }
-
-        return  statistics;
-    }
 }

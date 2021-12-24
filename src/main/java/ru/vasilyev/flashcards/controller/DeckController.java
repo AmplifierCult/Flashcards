@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.service.DeckService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class DeckController {
     DeckService deckService;
 
     @Autowired
-    DeckDTO deckDTOMapper;
+    MappingUtils deckDTOMapper;
 
     @GetMapping("/decks")
     List<DeckDTO> all() {

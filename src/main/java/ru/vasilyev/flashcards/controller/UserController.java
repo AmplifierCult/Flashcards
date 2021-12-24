@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.service.UserService;
 
@@ -25,7 +26,7 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    UserDTO userDTOMapper;
+    MappingUtils userDTOMapper;
 
     @GetMapping("/users")
     List<UserDTO> all() {

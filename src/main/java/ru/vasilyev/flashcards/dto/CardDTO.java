@@ -1,7 +1,6 @@
 package ru.vasilyev.flashcards.dto;
 
 import org.springframework.stereotype.Component;
-import ru.vasilyev.flashcards.domain.Card;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Map;
@@ -91,53 +90,5 @@ public class CardDTO {
 
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public CardDTO mapToCardDTO(Card card) {
-        CardDTO cardDTO = new CardDTO();
-        cardDTO.setId(card.getId());
-
-        if(card.getImage() != null) {
-            cardDTO.setImage(card.getImage());
-        }
-
-        cardDTO.setWord(card.getWord());
-        cardDTO.setTranslatedWord(card.getTranslatedWord());
-
-        if(card.getExampleOfUse() != null) {
-            cardDTO.setExampleOfUse(card.getExampleOfUse());
-        }
-
-        cardDTO.setAuthorId(card.getAuthor().getId());
-
-        if(card.getExampleOfPronunciation() != null) {
-            cardDTO.setExampleOfPronunciation(card.getExampleOfPronunciation());
-        }
-
-        cardDTO.setCreationDate(card.getCreationDate().toString());
-        return cardDTO;
-    }
-
-    public Card mapToCard(CardDTO cardDTO){
-        String word = cardDTO.getWord();
-        Card card = new Card(word);
-
-        if(cardDTO.getTranslatedWord() != null) {
-            card.setTranslatedWord(cardDTO.getTranslatedWord());
-        }
-
-        if(cardDTO.getImage() != null) {
-            card.setImage(cardDTO.getImage());
-        }
-
-        if(cardDTO.getExampleOfUse() != null) {
-            card.setExampleOfUse(cardDTO.getExampleOfUse());
-        }
-
-        if(cardDTO.getExampleOfPronunciation() != null) {
-            card.setExampleOfPronunciation(cardDTO.getExampleOfPronunciation());
-        }
-
-        return card;
     }
 }

@@ -32,7 +32,7 @@ public class LoadDataBase {
     @Autowired
     DeckRepository deckRepository;
 
-    void initUserDatabase() {
+    public void initUserDatabase() {
         User firstUser = new User("Andrey");
         firstUser.setPassword("qwerty");
         firstUser.setRegistrationDate(Instant.now());
@@ -59,11 +59,11 @@ public class LoadDataBase {
         log.info("Preloading " + userRepository.save(fourthUser));
     }
 
-    void cleanUserDataBase() {
+    public void cleanUserDataBase() {
         userRepository.deleteAll();
     }
 
-    void initCardDatabase() {
+    public void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");
         Card firstCard = new Card("Wood", author);
         firstCard.setTranslatedWord("Древесина");
@@ -85,11 +85,11 @@ public class LoadDataBase {
         log.info("Preloading " + cardRepository.save(fourthCard));
     }
 
-    void cleanCardDataBase() {
+    public void cleanCardDataBase() {
         cardRepository.deleteAll();
     }
 
-    void initStatisticsDatabase() {
+    public void initStatisticsDatabase() {
         User author = userRepository.findByLogin("Andrey");
         Card firstCard = cardRepository.findByWord("Wood");
         Card secondCard = cardRepository.findByWord("Iron");
@@ -101,11 +101,11 @@ public class LoadDataBase {
         log.info("Preloading " + statisticsRepository.save(new Statistics("Perfect", author, fourthCard)));
     }
 
-    void cleanStatisticsDataBase() {
+    public void cleanStatisticsDataBase() {
         statisticsRepository.deleteAll();
     }
 
-    void initDeckDatabase() {
+    public void initDeckDatabase() {
         User author = userRepository.findByLogin("Andrey");
         Deck firstDeck = new Deck("Metals", author);
         firstDeck.setCreationDate(Instant.now());
@@ -122,7 +122,7 @@ public class LoadDataBase {
         log.info("Preloading " + deckRepository.save(fourthDeck));
     }
 
-    void cleanDeckDataBase() {
+    public void cleanDeckDataBase() {
         deckRepository.deleteAll();
     }
 }

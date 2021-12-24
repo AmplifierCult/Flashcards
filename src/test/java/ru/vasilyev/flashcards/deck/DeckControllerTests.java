@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.deck;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -9,8 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.service.DeckService;
 
@@ -26,13 +28,10 @@ public class DeckControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    DeckRepository deckRepository;
-
-    @Autowired
     DeckService deckService;
 
     @Autowired
-    DeckDTO deckDTOMapper;
+    MappingUtils deckDTOMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -86,7 +85,7 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerDeleteRequest() throws Exception {
-        Long deckId = deckRepository.findByDeckName("Weather").getId();
+        Long deckId = deckService.getDeckByDeckName("Weather").getId();
         this.mockMvc.perform(delete("/decks/{id}", deckId)).andExpect(status().isOk());
         this.mockMvc.perform(get("/decks/{id}", deckId)).andExpect(status().isBadRequest());
     }

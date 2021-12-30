@@ -32,8 +32,8 @@ public class UserService {
     }
 
     public User createUser(User user){
-        validateUser(user);
         user.setRegistrationDate(Instant.now());
+        validateUser(user);
         return userRepository.save(user);
     }
 

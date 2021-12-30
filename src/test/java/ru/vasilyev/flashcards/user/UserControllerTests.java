@@ -14,6 +14,7 @@ import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.UserDTO;
+import ru.vasilyev.flashcards.dto.mapper.UserMapper;
 import ru.vasilyev.flashcards.repository.UserRepository;
 import ru.vasilyev.flashcards.service.DeckService;
 import ru.vasilyev.flashcards.service.UserService;
@@ -63,8 +64,25 @@ public class UserControllerTests {
     }
 
     @Test
-    void userControllerGetRequests() throws Exception {
+    void GetAllUsers() throws Exception {
         this.mockMvc.perform(get("/users")).andExpect(status().isOk());
+    }
+
+    @Test
+    void GetUserById() throws Exception {
+        Long id = userService.getUserByLogin("Andrey").getId();
+        this.mockMvc.perform(get("/users/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value("Andrey"));
+    }
+
+    @Test
+    void GetUserByLogin() throws Exception {
+        String login = "Andrey";
+        Long id = userService.getUserByLogin(login).getId();
+        this.mockMvc.perform(get("/users/search?login={login}", login))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id));
     }
 
     @Test

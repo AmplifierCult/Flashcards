@@ -68,8 +68,9 @@ public class CardControllerTests {
 
     @Test
     void GetCardByWord() throws Exception {
-        Long id = cardService.getCardByWord("Wood").getId();
-        this.mockMvc.perform(get("/cards/search?word=Wood"))
+        String word = "Wood";
+        Long id = cardService.getCardByWord(word).getId();
+        this.mockMvc.perform(get("/cards/search?word={word}", word))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id));
     }

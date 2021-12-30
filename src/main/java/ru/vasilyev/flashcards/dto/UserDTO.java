@@ -18,7 +18,6 @@ public class UserDTO {
 
     private String email;
 
-    @NotBlank(message = "registrationDate cannot be null")
     private String registrationDate;
 
     private String lastActionDate;

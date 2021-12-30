@@ -1,5 +1,7 @@
 package ru.vasilyev.flashcards.domain;
 
+import net.bytebuddy.implementation.bind.annotation.Default;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -38,11 +40,6 @@ public class User {
     private List <Deck> decks;
 
     protected User() {
-    }
-
-    public User(String login, String email) {
-        this.login = login;
-        this.email = email;
     }
 
     public User(String login) {

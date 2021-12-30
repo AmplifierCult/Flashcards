@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -12,11 +14,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    String login;
-    String password;
-    String email;
-    Instant registrationDate;
-    Instant lastActionDate;
+    @NotBlank(message = "login cannot be empty")
+    @Column(unique = true)
+    private String login;
+
+    @NotBlank(message = "password cannot be empty")
+    private String password;
+
+    private String email;
+
+    @NotNull(message = "registrationDate cannot be null")
+    private Instant registrationDate;
+
+    private Instant lastActionDate;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -25,7 +35,7 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "Deck")}
     )
     @OrderColumn
-    List <Deck> decks;
+    private List <Deck> decks;
 
     protected User() {
     }
@@ -37,6 +47,14 @@ public class User {
 
     public User(String login) {
         this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
@@ -63,6 +81,30 @@ public class User {
         this.email = email;
     }
 
+    public Instant getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Instant registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public Instant getLastActionDate() {
+        return lastActionDate;
+    }
+
+    public void setLastActionDate(Instant lastActionDate) {
+        this.lastActionDate = lastActionDate;
+    }
+
+    public List<Deck> getDecks() {
+        return decks;
+    }
+
+    public void setDecks(List<Deck> decks) {
+        this.decks = decks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,7 +123,9 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", registrationDate='" + registrationDate + '\'' +
                 '}';
     }
 }

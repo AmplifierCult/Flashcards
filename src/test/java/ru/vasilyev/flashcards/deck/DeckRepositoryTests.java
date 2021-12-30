@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.deck;
 
 
 import org.junit.jupiter.api.AfterEach;
@@ -6,10 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
+
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,7 +46,7 @@ public class DeckRepositoryTests {
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
         Deck newDeck = new Deck("Coding", author);
-
+        newDeck.setCreationDate(Instant.now());
         deckRepository.save(newDeck);
         assertEquals(5, deckRepository.count());
         assertEquals(newDeck.getDeckName(), deckRepository.findByDeckName("Coding").getDeckName());

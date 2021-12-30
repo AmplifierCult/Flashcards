@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.deck;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -9,10 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Deck;
-import ru.vasilyev.flashcards.domain.User;
+import ru.vasilyev.flashcards.dto.DeckDTO;
+import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.repository.DeckRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.service.DeckService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,10 +28,10 @@ public class DeckControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    DeckRepository deckRepository;
+    DeckService deckService;
 
     @Autowired
-    UserRepository userRepository;
+    MappingUtils deckDTOMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -58,11 +60,9 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerPostRequests() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Deck newDeck = new Deck("Engineering", author);
-
+        Deck newDeck = new Deck("Engineering");
         this.mockMvc.perform(post("/decks")
-                        .content(objectMapper.writeValueAsString(newDeck))
+                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(newDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -72,11 +72,11 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerPutRequests() throws Exception {
-        Deck replacedDeck = deckRepository.findByDeckName("Types of animals");
+        Deck replacedDeck = deckService.getDeckByDeckName("Types of animals");
         replacedDeck.setDeckName("Space");
         Long id = replacedDeck.getId();
         this.mockMvc.perform(put("/decks/{id}", id)
-                        .content(objectMapper.writeValueAsString(replacedDeck))
+                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(replacedDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())
@@ -85,7 +85,7 @@ public class DeckControllerTests {
 
     @Test
     void deckControllerDeleteRequest() throws Exception {
-        Long deckId = deckRepository.findByDeckName("Weather").getId();
+        Long deckId = deckService.getDeckByDeckName("Weather").getId();
         this.mockMvc.perform(delete("/decks/{id}", deckId)).andExpect(status().isOk());
         this.mockMvc.perform(get("/decks/{id}", deckId)).andExpect(status().isBadRequest());
     }

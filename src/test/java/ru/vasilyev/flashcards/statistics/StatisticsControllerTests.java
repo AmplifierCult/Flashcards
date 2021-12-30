@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.statistics;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -9,12 +9,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.vasilyev.flashcards.domain.Card;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Statistics;
-import ru.vasilyev.flashcards.domain.User;
-import ru.vasilyev.flashcards.repository.CardRepository;
-import ru.vasilyev.flashcards.repository.StatisticsRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.StatisticsDTO;
+import ru.vasilyev.flashcards.service.StatisticsService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,13 +27,10 @@ public class StatisticsControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    StatisticsRepository statisticsRepository;
+    MappingUtils statisticsDTOMapper;
 
     @Autowired
-    CardRepository cardRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    StatisticsService statisticsService;
 
     @Autowired
     MockMvc mockMvc;
@@ -54,7 +50,6 @@ public class StatisticsControllerTests {
         loadDataBase.cleanStatisticsDataBase();
         loadDataBase.cleanCardDataBase();
         loadDataBase.cleanUserDataBase();
-        loadDataBase.cleanDeckDataBase();
     }
 
     @Test
@@ -63,13 +58,10 @@ public class StatisticsControllerTests {
     }
 
     @Test
-    void statisticsControllerPostRequest() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Gold", author);
-        cardRepository.save(newCard);
-        Statistics newStatistics = new Statistics("Low", author, newCard);
+    void statisticsControllerPostRequest() throws Exception { //TODO FIX ME
+        Statistics newStatistics = new Statistics("Low");
         this.mockMvc.perform(post("/statistics")
-                        .content(objectMapper.writeValueAsString(newStatistics))
+                        .content(objectMapper.writeValueAsString(statisticsDTOMapper.mapToStatisticsDTO(newStatistics)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -79,24 +71,21 @@ public class StatisticsControllerTests {
 
     @Test
     void statisticsControllerPutRequest() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Gold", author);
-        cardRepository.save(newCard);
-        Statistics newStatistics = new Statistics("High", author, newCard);
-
-        Long id = statisticsRepository.findByKnowledgeLevel("Perfect").get(0).getId();
+        Statistics replacedStatistics = statisticsService.getStatisticsByKnowledgeLevel("Low").get(0);
+        replacedStatistics.setKnowledgeLevel("Perfect");
+        Long id = replacedStatistics.getId();
         this.mockMvc.perform(put("/statistics/{id}", id)
-                        .content(objectMapper.writeValueAsString(newStatistics))
+                        .content(objectMapper.writeValueAsString(statisticsDTOMapper.mapToStatisticsDTO(replacedStatistics)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.knowledgeLevel").value("High"))
-                .andExpect(jsonPath("$.card").isNotEmpty());
+                .andExpect(jsonPath("$.knowledgeLevel").value("Perfect"))
+                .andExpect(jsonPath("$.cardId").isNotEmpty());
     }
 
     @Test
     void statisticsControllerDeleteRequest() throws Exception {
-        Long id = statisticsRepository.findByKnowledgeLevel("Low").get(0).getId();
+        Long id = statisticsService.getStatisticsByKnowledgeLevel("Low").get(0).getId();
         this.mockMvc.perform(delete("/statistics/{id}", id)).andExpect(status().isOk());
         this.mockMvc.perform(get("/statistics/{id}", id)).andExpect(status().isBadRequest());
     }

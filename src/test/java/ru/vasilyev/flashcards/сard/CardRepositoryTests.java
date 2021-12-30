@@ -1,15 +1,20 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.сard;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.CardRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,10 +50,14 @@ public class CardRepositoryTests {
     @Test
     void baseCreateOperation() {
         User author = userRepository.findByLogin("Andrey");
-        Card savedCard = cardRepository.save(new Card("Java", author));
+        Card newCard = new Card("Java", author);
+        newCard.setTranslatedWord("Ява");
+        newCard.setCreationDate(Instant.now());
+        Card savedCard = cardRepository.save(newCard);
+
         assertEquals(5, cardRepository.count());
-        assertEquals(savedCard.getWord(), cardRepository.findByWord("Java").getWord());
-        assertEquals(savedCard.getId(), cardRepository.findById(savedCard.getId()).get().getId());
+        assertEquals(savedCard.getWord(), newCard.getWord());
+        assertEquals(savedCard.getId(), newCard.getId());
     }
 
     @Test
@@ -57,9 +66,9 @@ public class CardRepositoryTests {
         Map<String, String> exampleOfUse = new HashMap<>();
         exampleOfUse.put(card.getWord(), "Humans stopped using stone because bronze and iron were superior materials.");
         card.setExampleOfUse(exampleOfUse);
-        cardRepository.save(card);
+        Card savedCard = cardRepository.save(card);
         assertEquals(card.getId(), cardRepository.findByWord("Iron").getId());
-        assertEquals(card.getExampleOfUse(), cardRepository.findById(card.getId()).get().getExampleOfUse());
+        assertEquals(card.getExampleOfUse(), savedCard.getExampleOfUse());
         assertEquals(4, cardRepository.count());
     }
 

@@ -2,15 +2,16 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.User;
-import ru.vasilyev.flashcards.domain.UserNotFoundException;
-import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.UserDTO;
+import ru.vasilyev.flashcards.service.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -21,53 +22,43 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private final UserRepository repository;
+    @Autowired
+    UserService userService;
 
-    public UserController(UserRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    MappingUtils userDTOMapper;
 
     @GetMapping("/users")
-    List<User> all() {
-        return repository.findAll();
+    List<UserDTO> all() {
+        return userService.getAllUsers().stream().map(userDTOMapper::mapToUserDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/users/{id}")
-    User getUserById(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+    UserDTO getUserById(@PathVariable Long id) {
+        return userDTOMapper.mapToUserDTO(userService.getUserById(id));
     }
 
     @GetMapping("/users/search")
-    User getUserByLogin(@RequestParam(value = "login", required = false) String login) {
-        if(ObjectUtils.isEmpty(login)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a login.");
-        }
-        return repository.findByLogin(login);
+    UserDTO getUserByLogin(@RequestParam(value = "login", required = false) String login) {
+        return userDTOMapper.mapToUserDTO(userService.getUserByLogin(login));
     }
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    User newUser(@RequestBody User newUser) {
-        return repository.save(newUser);
+    UserDTO newUser(@RequestBody UserDTO newUserDTO) {
+        User newUser = userDTOMapper.mapToUser(newUserDTO);
+        User createdUser = userService.createUser(newUser);
+        return userDTOMapper.mapToUserDTO(createdUser);
     }
 
     @PutMapping("/users/{id}")
-    User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(user -> {
-                    user.setLogin(newUser.getLogin());
-                    user.setEmail(newUser.getEmail());
-                    return repository.save(user);
-                })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return repository.save(newUser);
-                });
+    UserDTO replaceUser(@RequestBody UserDTO newUserDTO, @PathVariable Long id) {
+        User newUser = userDTOMapper.mapToUser(newUserDTO);
+        return userDTOMapper.mapToUserDTO(userService.updateUser(newUser, id));
     }
 
     @DeleteMapping("/user/{id}")
     void deleteUser(@PathVariable Long id) {
-        repository.deleteById(id);
+        userService.deleteUserById(id);
     }
 }

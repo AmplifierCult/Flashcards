@@ -13,6 +13,8 @@ import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.repository.StatisticsRepository;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
+import java.time.Instant;
+
 @Component
 public class LoadDataBase {
 
@@ -30,31 +32,64 @@ public class LoadDataBase {
     @Autowired
     DeckRepository deckRepository;
 
-    void initUserDatabase() {
-        log.info("Preloading " + userRepository.save(new User("Andrey")));
-        log.info("Preloading " + userRepository.save(new User("Ivan")));
-        log.info("Preloading " + userRepository.save(new User("Fedor")));
-        log.info("Preloading " + userRepository.save(new User("Igor")));
+    public void initUserDatabase() {
+        User firstUser = new User("Andrey");
+        firstUser.setPassword("qwerty");
+        firstUser.setRegistrationDate(Instant.now());
+        firstUser.setLastActionDate(Instant.now());
+
+        log.info("Preloading " + userRepository.save(firstUser));
+
+        User secondUser = new User("Ivan");
+        secondUser.setPassword("123456");
+        secondUser.setRegistrationDate(Instant.now());
+        secondUser.setLastActionDate(Instant.now());
+        log.info("Preloading " + userRepository.save(secondUser));
+
+        User thirdUser = new User("Fedor");
+        thirdUser.setPassword("asdf");
+        thirdUser.setRegistrationDate(Instant.now());
+        thirdUser.setLastActionDate(Instant.now());
+        log.info("Preloading " + userRepository.save(thirdUser));
+
+        User fourthUser = new User("Igor");
+        fourthUser.setPassword("zxcv");
+        fourthUser.setRegistrationDate(Instant.now());
+        fourthUser.setLastActionDate(Instant.now());
+        log.info("Preloading " + userRepository.save(fourthUser));
     }
 
-    void cleanUserDataBase() {
+    public void cleanUserDataBase() {
         userRepository.deleteAll();
     }
 
-
-    void initCardDatabase() {
+    public void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        log.info("Preloading " + cardRepository.save(new Card("Wood", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Iron", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Water", author)));
-        log.info("Preloading " + cardRepository.save(new Card("Rock", author)));
+        Card firstCard = new Card("Wood", author);
+        firstCard.setTranslatedWord("Древесина");
+        firstCard.setCreationDate(Instant.now());
+
+        Card secondCard = new Card("Iron", author);
+        secondCard.setTranslatedWord("Железо");
+        secondCard.setCreationDate(Instant.now());
+        Card thirdCard = new Card("Water", author);
+        thirdCard.setTranslatedWord("Вода");
+        thirdCard.setCreationDate(Instant.now());
+        Card fourthCard = new Card("Rock", author);
+        fourthCard.setTranslatedWord("Камень");
+        fourthCard.setCreationDate(Instant.now());
+
+        log.info("Preloading " + cardRepository.save(firstCard));
+        log.info("Preloading " + cardRepository.save(secondCard));
+        log.info("Preloading " + cardRepository.save(thirdCard));
+        log.info("Preloading " + cardRepository.save(fourthCard));
     }
 
-    void cleanCardDataBase() {
+    public void cleanCardDataBase() {
         cardRepository.deleteAll();
     }
 
-    void initStatisticsDatabase() {
+    public void initStatisticsDatabase() {
         User author = userRepository.findByLogin("Andrey");
         Card firstCard = cardRepository.findByWord("Wood");
         Card secondCard = cardRepository.findByWord("Iron");
@@ -66,19 +101,28 @@ public class LoadDataBase {
         log.info("Preloading " + statisticsRepository.save(new Statistics("Perfect", author, fourthCard)));
     }
 
-    void cleanStatisticsDataBase() {
+    public void cleanStatisticsDataBase() {
         statisticsRepository.deleteAll();
     }
 
-    void initDeckDatabase() {
+    public void initDeckDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        log.info("Preloading " + deckRepository.save(new Deck("Metals", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Weather", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of wood", author)));
-        log.info("Preloading " + deckRepository.save(new Deck("Types of animals", author)));
+        Deck firstDeck = new Deck("Metals", author);
+        firstDeck.setCreationDate(Instant.now());
+        Deck secondDeck = new Deck("Weather", author);
+        secondDeck.setCreationDate(Instant.now());
+        Deck thirdDeck = new Deck("Types of wood", author);
+        thirdDeck.setCreationDate(Instant.now());
+        Deck fourthDeck = new Deck("Types of animals", author);
+        fourthDeck.setCreationDate(Instant.now());
+
+        log.info("Preloading " + deckRepository.save(firstDeck));
+        log.info("Preloading " + deckRepository.save(secondDeck));
+        log.info("Preloading " + deckRepository.save(thirdDeck));
+        log.info("Preloading " + deckRepository.save(fourthDeck));
     }
 
-    void cleanDeckDataBase() {
+    public void cleanDeckDataBase() {
         deckRepository.deleteAll();
     }
 }

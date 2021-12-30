@@ -1,18 +1,21 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.user;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.Instant;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class UserRepositoryTests {
+
     @Autowired
     UserRepository userRepository;
 
@@ -34,13 +37,14 @@ public class UserRepositoryTests {
 
     @Test
     void baseCreateOperations() {
-        User newUser;
-        newUser = userRepository.save(new User("Jack"));
+        User newUser = new User("Jack");
+        newUser.setPassword("126");
+        newUser.setRegistrationDate(Instant.now());
+        newUser = userRepository.save(newUser);
         assertEquals(5, userRepository.count());
         assertEquals(newUser.getLogin(), userRepository.findByLogin("Jack").getLogin());
         assertEquals(newUser.getId(), userRepository.findById(newUser.getId()).get().getId());
     }
-
 
     @Test
     void baseUpdateOperations() {
@@ -48,10 +52,7 @@ public class UserRepositoryTests {
         updatedUser.setLogin("Nick");
         userRepository.save(updatedUser);
         assertEquals(updatedUser.getId(), userRepository.findByLogin("Nick").getId());
-
     }
-
-
 
     @Test
     void baseDeleteOperations() {
@@ -59,5 +60,4 @@ public class UserRepositoryTests {
         userRepository.delete(user);
         assertEquals(3, userRepository.count());
     }
-
 }

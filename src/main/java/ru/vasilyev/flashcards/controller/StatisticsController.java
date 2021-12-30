@@ -2,72 +2,58 @@ package ru.vasilyev.flashcards.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Statistics;
-import ru.vasilyev.flashcards.repository.StatisticsRepository;
+import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.StatisticsDTO;
+import ru.vasilyev.flashcards.service.StatisticsService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class StatisticsController {
 
     private static final Logger log = LoggerFactory.getLogger(StatisticsController.class);
 
-    private final StatisticsRepository repository;
+    @Autowired
+    StatisticsService statisticsService;
 
-    public StatisticsController(StatisticsRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    MappingUtils statisticsDTOMapper;
 
     @GetMapping("/statistics")
-    List<Statistics> all() {
-        return repository.findAll();
+    List<StatisticsDTO> all() {
+        return statisticsService.getAllStatistics().stream().map(statisticsDTOMapper::mapToStatisticsDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/statistics/{id}")
-    Statistics getStatisticsById(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Statistics not found."));
+    StatisticsDTO getStatisticsById(@PathVariable Long id) {
+        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.getStatisticsById(id));
     }
 
     @GetMapping("/statistics/search")
-    List<Statistics> getStatisticsByKnowledgeLevel(@RequestParam(value = "knowledgeLevel", required = false) String knowledgeLevel) {
-        if(ObjectUtils.isEmpty(knowledgeLevel)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 400. User did not enter a knowledge level.");
-        } else if(ObjectUtils.isEmpty(repository.findByKnowledgeLevel(knowledgeLevel))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: 404. Statistics not found.");
-        } else return repository.findByKnowledgeLevel(knowledgeLevel);
+    List<StatisticsDTO> getStatisticsByKnowledgeLevel(@RequestParam(value = "knowledgeLevel", required = false) String knowledgeLevel) {
+        return statisticsService.getStatisticsByKnowledgeLevel(knowledgeLevel).stream().map(statisticsDTOMapper::mapToStatisticsDTO).collect(Collectors.toList());
     }
 
     @PostMapping("/statistics")
     @ResponseStatus(HttpStatus.CREATED)
-    Statistics newStatistics(@RequestBody Statistics newStatistics) {
-        return repository.save(newStatistics);
+    StatisticsDTO createStatistics(@RequestBody StatisticsDTO newStatisticsDTO) {
+        Statistics newStatistics = statisticsDTOMapper.mapToStatistics(newStatisticsDTO);
+        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.createStatistics(newStatistics));
     }
 
     @PutMapping("/statistics/{id}")
-    Statistics replaceStatistics(@RequestBody Statistics newStatistics, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(statistics -> {
-                    statistics.setUser(newStatistics.getUser());
-                    statistics.setCard(newStatistics.getCard());
-                    statistics.setLastRecurrenceDate(newStatistics.getLastRecurrenceDate());
-                    statistics.setKnowledgeLevel(newStatistics.getKnowledgeLevel());
-                    statistics.setHistory(newStatistics.getHistory());
-                    return repository.save(statistics);
-                })
-                .orElseGet(() -> {
-                    newStatistics.setId(id);
-                    return repository.save(newStatistics);
-                });
+    StatisticsDTO replaceStatistics(@RequestBody StatisticsDTO newStatisticsDTO, @PathVariable Long id) {
+        Statistics newStatistics = statisticsDTOMapper.mapToStatistics(newStatisticsDTO);
+        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.replaceStatistics(newStatistics, id));
     }
 
     @DeleteMapping("/statistics/{id}")
     void deleteStatistics(@PathVariable Long id) {
-        repository.deleteById(id);
+        statisticsService.deleteStatistics(id);
     }
 }

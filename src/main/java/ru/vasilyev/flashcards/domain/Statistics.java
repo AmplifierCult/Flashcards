@@ -1,6 +1,8 @@
 package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
@@ -11,15 +13,19 @@ public class Statistics {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull(message = "user cannot be null")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     User user;
 
+    @NotNull(message = "card cannot be null")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "card_id")
     Card card;
 
     Instant lastRecurrenceDate;
+
+    @NotBlank(message = "knowledgeLevel cannot be empty")
     String knowledgeLevel;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -29,6 +35,10 @@ public class Statistics {
     Map<String, String> history;
 
     protected Statistics() {
+    }
+
+    public Statistics(String knowledgeLevel) {
+        this.knowledgeLevel = knowledgeLevel;
     }
 
     public Statistics(String knowledgeLevel, User user, Card card) {
@@ -57,7 +67,7 @@ public class Statistics {
         return card;
     }
 
-    public void setCard(Card cardId) {
+    public void setCard(Card card) {
         this.card = card;
     }
 

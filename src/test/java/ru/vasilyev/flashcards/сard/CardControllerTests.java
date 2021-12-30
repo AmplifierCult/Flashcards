@@ -1,4 +1,4 @@
-package ru.vasilyev.flashcards;
+package ru.vasilyev.flashcards.сard;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -11,10 +11,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.vasilyev.flashcards.domain.Card;
-import ru.vasilyev.flashcards.domain.User;
-import ru.vasilyev.flashcards.repository.CardRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
+import ru.vasilyev.flashcards.LoadDataBase;
+import ru.vasilyev.flashcards.dto.CardDTO;
+import ru.vasilyev.flashcards.service.CardService;
+
+import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,10 +31,7 @@ public class CardControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    CardRepository cardRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    CardService cardService;
 
     @Autowired
     MockMvc mockMvc;
@@ -56,32 +54,53 @@ public class CardControllerTests {
     }
 
     @Test
-    void cardControllerGetRequests() throws Exception {
+    void GetAllCards() throws Exception {
         this.mockMvc.perform(get("/cards")).andExpect(status().isOk());
     }
 
     @Test
+    void GetCardById() throws Exception {
+        Long id = cardService.getCardByWord("Wood").getId();
+        this.mockMvc.perform(get("/cards/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.word").value("Wood"));
+    }
+
+    @Test
+    void GetCardByWord() throws Exception {
+        Long id = cardService.getCardByWord("Wood").getId();
+        this.mockMvc.perform(get("/cards/search?word=Wood"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id));
+    }
+
+    @Test
     void cardControllerPostRequests() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Steel", author);
+        CardDTO newCardDTO = new CardDTO();
+        newCardDTO.setWord("Steel");
+        newCardDTO.setTranslatedWord("Сталь");
+        newCardDTO.setExampleOfUse(new HashMap<>(){{
+            put("noun", "Blades of steel.");
+            put("adjective", "Steel sword.");
+        }});
         this.mockMvc.perform(post("/cards")
-                        .content(objectMapper.writeValueAsString(newCard))
+                        .content(objectMapper.writeValueAsString(newCardDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.word").value("Steel"))
-                .andExpect(jsonPath("$.author").value(author));
+                .andExpect(jsonPath("$.authorId").isNotEmpty());
     }
 
     @Test
     void cardControllerPutRequest() throws Exception {
-        User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Metal", author);
-        newCard.setTranslatedWord("Металл");
-        Long id = cardRepository.findByWord("Rock").getId();
+        CardDTO newCardDTO = new CardDTO();
+        newCardDTO.setWord("Metal");
+        newCardDTO.setTranslatedWord("Металл");
+        Long id = cardService.getCardByWord("Rock").getId();
         this.mockMvc.perform(put("/cards/{id}", id)
-                        .content(objectMapper.writeValueAsString(newCard))
+                        .content(objectMapper.writeValueAsString(newCardDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())
@@ -91,7 +110,7 @@ public class CardControllerTests {
 
     @Test
     void cardControllerDeleteRequest() throws Exception {
-        Long id = cardRepository.findByWord("Wood").getId();
+        Long id = cardService.getCardByWord("Wood").getId();
         this.mockMvc.perform(delete("/cards/{id}", id)).andExpect(status().isOk());
         this.mockMvc.perform(get("/cards/{id}", id)).andExpect(status().isBadRequest());
     }

@@ -45,7 +45,7 @@ public class UserController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO newUser(@RequestBody UserDTO newUserDTO) {
+    UserDTO createUser(@RequestBody UserDTO newUserDTO) {
         User newUser = userDTOMapper.mapToUser(newUserDTO);
         User createdUser = userService.createUser(newUser);
         return userDTOMapper.mapToUserDTO(createdUser);

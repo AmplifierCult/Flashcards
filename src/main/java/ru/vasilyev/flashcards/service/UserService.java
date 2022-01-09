@@ -3,7 +3,12 @@ package ru.vasilyev.flashcards.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.vasilyev.flashcards.domain.Role;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.domain.UserNotFoundException;
 import ru.vasilyev.flashcards.repository.UserRepository;
@@ -15,16 +20,20 @@ import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean authorize(User user) { //TODO реализовать
         validateUser(user);
@@ -34,6 +43,8 @@ public class UserService {
     public User createUser(User user){
         validateUser(user);
         user.setRegistrationDate(Instant.now());
+        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -68,6 +79,11 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public boolean userExists(User user) {
+        String login = user.getLogin();
+        return userRepository.findByLogin(login) != null;
+    }
+
     private void validateUser(User user) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -77,5 +93,16 @@ public class UserService {
         for (ConstraintViolation<User> violation : violations) {
             log.error(violation.getMessage());
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userRepository.findByLogin(login);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 }

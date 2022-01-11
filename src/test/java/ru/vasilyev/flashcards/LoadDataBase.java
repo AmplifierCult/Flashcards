@@ -65,17 +65,21 @@ public class LoadDataBase {
 
     public void initCardDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        Card firstCard = new Card("Wood", author);
+        Card firstCard = new Card("Wood");
+        firstCard.setAuthor(author);
         firstCard.setTranslatedWord("Древесина");
         firstCard.setCreationDate(Instant.now());
 
-        Card secondCard = new Card("Iron", author);
+        Card secondCard = new Card("Iron");
+        secondCard.setAuthor(author);
         secondCard.setTranslatedWord("Железо");
         secondCard.setCreationDate(Instant.now());
-        Card thirdCard = new Card("Water", author);
+        Card thirdCard = new Card("Water");
+        thirdCard.setAuthor(author);
         thirdCard.setTranslatedWord("Вода");
         thirdCard.setCreationDate(Instant.now());
-        Card fourthCard = new Card("Rock", author);
+        Card fourthCard = new Card("Rock");
+        fourthCard.setAuthor(author);
         fourthCard.setTranslatedWord("Камень");
         fourthCard.setCreationDate(Instant.now());
 

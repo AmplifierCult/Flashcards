@@ -42,11 +42,6 @@ public class Card {
         this.word = word;
     }
 
-    public Card(String word, User author) {
-        this.word = word;
-        this.author = author;
-    }
-
     public Long getId() {
         return id;
     }

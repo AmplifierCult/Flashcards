@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Mapper
 public interface UserMapper {
 
+    DeckService DECK_SERVICE = new DeckService();
     UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "registrationDate", dateFormat = "EEE, d MMM yyyy HH:mm:ss Z")
@@ -28,13 +29,12 @@ public interface UserMapper {
         } else return null;
     }
 
-    default List<Deck> deckNamesToDecks(List<String> deckNames) {
-        if (deckNames != null) {
-            DeckService deckService = new DeckService();
-            return deckNames.stream().map(deckService::getDeckByDeckName).collect(Collectors.toList());
-        } else return null;
-    }
-
     @InheritInverseConfiguration
     User mapToUser(UserDTO userDTO);
+
+    default List<Deck> deckNamesToDecks(List<String> deckNames) {
+        if (deckNames != null) {
+            return deckNames.stream().map(DECK_SERVICE::getDeckByDeckName).collect(Collectors.toList());
+        } else return null;
+    }
 }

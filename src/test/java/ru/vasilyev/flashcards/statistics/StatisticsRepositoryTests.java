@@ -48,7 +48,8 @@ public class StatisticsRepositoryTests {
     @Test
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Gold", author);
+        Card newCard = new Card("Gold");
+        newCard.setAuthor(author);
         newCard.setCreationDate(Instant.now());
         newCard.setTranslatedWord("Золото");
         cardRepository.save(newCard);

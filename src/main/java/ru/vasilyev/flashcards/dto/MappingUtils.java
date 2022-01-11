@@ -172,30 +172,4 @@ public class MappingUtils {
 
         return  statistics;
     }
-
-    public UserDTO mapToUserDTO(User user){
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setLogin(user.getLogin());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setRegistrationDate(user.getRegistrationDate().toString());
-
-        if (userDTO.getLastActionDate() != null) {
-            userDTO.setLastActionDate(user.getLastActionDate().toString());
-        }
-
-        if (userDTO.getDeckNames() != null) {
-            userDTO.setDeckNames(user.getDecks().stream().map(Deck::getDeckName).collect(Collectors.toList()));
-        }
-        return userDTO;
-    }
-
-    public User mapToUser(UserDTO userDTO){
-        String login = userDTO.getLogin();
-        User user = new User(login);
-        user.setPassword(userDTO.getPassword());
-        user.setEmail(userDTO.getEmail());
-        return user;
-    }
 }

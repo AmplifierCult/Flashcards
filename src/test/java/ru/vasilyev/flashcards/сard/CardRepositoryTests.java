@@ -50,7 +50,8 @@ public class CardRepositoryTests {
     @Test
     void baseCreateOperation() {
         User author = userRepository.findByLogin("Andrey");
-        Card newCard = new Card("Java", author);
+        Card newCard = new Card("Java");
+        newCard.setAuthor(author);
         newCard.setTranslatedWord("Ява");
         newCard.setCreationDate(Instant.now());
         Card savedCard = cardRepository.save(newCard);

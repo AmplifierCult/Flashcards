@@ -106,10 +106,12 @@ public class UserControllerTests {
         newUser.setPassword("12356");
         newUser.setRegistrationDate(Instant.now());
         newUser.setLastActionDate(Instant.now());
-        Long id = userService.getUserByLogin("Fedor").getId();
         newUser.setDecks(List.of(deckService.getDeckByDeckName("Metals")));
+
+        Long id = userService.getUserByLogin("Fedor").getId();
+
         this.mockMvc.perform(put("/users/{id}", id)
-                        .content(objectMapper.writeValueAsString(userDTOMapper.mapToUserDTO(newUser)))
+                        .content(objectMapper.writeValueAsString(UserMapper.MAPPER.mapToUserDTO(newUser)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())

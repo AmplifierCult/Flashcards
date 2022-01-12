@@ -18,12 +18,12 @@ public class Deck {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "Deck_Card",
-            joinColumns = {@JoinColumn(name = "Deck")},
-            inverseJoinColumns = {@JoinColumn(name = "Card")}
+            name = "Deck_Card", //TODO FIX ME перевести в нижний регистр
+            joinColumns = {@JoinColumn(name = "Deck")}, //TODO FIX ME перевести в нижний регистр
+            inverseJoinColumns = {@JoinColumn(name = "Card")} //TODO FIX ME перевести в нижний регистр
     )
     @OrderColumn
-    List<Card> deck;
+    List<Card> deck; //TODO FIX ME переименовать в cards
 
     @NotBlank(message = "deckName cannot be empty")
     String deckName;

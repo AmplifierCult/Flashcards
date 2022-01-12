@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -122,7 +123,7 @@ public class User {
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", registrationDate='" + DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z").withZone(ZoneId.systemDefault()).format(registrationDate) + '\'' +
+                ", registrationDate='" + DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z", Locale.US).withZone(ZoneId.systemDefault()).format(registrationDate) + '\'' +
                 '}';
     }
 }

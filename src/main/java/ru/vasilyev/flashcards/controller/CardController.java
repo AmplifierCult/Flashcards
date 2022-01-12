@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.dto.CardDTO;
 import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.mapper.CardMapper;
 import ru.vasilyev.flashcards.service.CardService;
 
 import java.util.List;
@@ -22,34 +23,34 @@ public class CardController {
     CardService cardService;
 
     @Autowired
-    MappingUtils cardDTOMapper;
+    CardMapper cardMapper;
 
     @GetMapping("/cards")
     List<CardDTO> all() {
-        return cardService.getAllCards().stream().map(cardDTOMapper::mapToCardDTO).collect(Collectors.toList());
+        return cardService.getAllCards().stream().map(cardMapper::mapToCardDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/cards/{id}")
     CardDTO getCardById(@PathVariable Long id) {
-        return cardDTOMapper.mapToCardDTO(cardService.getCardById(id));
+        return cardMapper.mapToCardDTO(cardService.getCardById(id));
     }
 
     @GetMapping("/cards/search")
     CardDTO getCardByWord(@RequestParam(value = "word", required = false) String word) {
-        return cardDTOMapper.mapToCardDTO(cardService.getCardByWord(word));
+        return cardMapper.mapToCardDTO(cardService.getCardByWord(word));
     }
 
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
     CardDTO createCard(@RequestBody CardDTO newCardDTO) {
-        Card newCard = cardDTOMapper.mapToCard(newCardDTO);
-        return cardDTOMapper.mapToCardDTO(cardService.createCard(newCard));
+        Card newCard = cardMapper.mapToCard(newCardDTO);
+        return cardMapper.mapToCardDTO(cardService.createCard(newCard));
     }
 
     @PutMapping("/cards/{id}")
     CardDTO replaceCard(@RequestBody CardDTO newCardDTO, @PathVariable Long id) {
-        Card newCard = cardDTOMapper.mapToCard(newCardDTO);
-        return cardDTOMapper.mapToCardDTO(cardService.replaceCard(newCard, id));
+        Card newCard = cardMapper.mapToCard(newCardDTO);
+        return cardMapper.mapToCardDTO(cardService.replaceCard(newCard, id));
     }
 
     @DeleteMapping("/cards/{id}")

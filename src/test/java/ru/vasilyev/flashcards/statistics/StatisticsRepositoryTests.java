@@ -48,12 +48,16 @@ public class StatisticsRepositoryTests {
     @Test
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
+
         Card newCard = new Card("Gold");
         newCard.setAuthor(author);
         newCard.setCreationDate(Instant.now());
         newCard.setTranslatedWord("Золото");
         cardRepository.save(newCard);
-        Statistics newStatistics = new Statistics("High", author, newCard);
+
+        Statistics newStatistics = new Statistics("High");
+        newStatistics.setUser(author);
+        newStatistics.setCard(newCard);
 
         statisticsRepository.save(newStatistics);
         assertEquals(5, statisticsRepository.count());

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
 import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.mapper.DeckMapper;
 import ru.vasilyev.flashcards.service.DeckService;
 
 import java.util.List;
@@ -22,34 +23,34 @@ public class DeckController {
     DeckService deckService;
 
     @Autowired
-    MappingUtils deckDTOMapper;
+    DeckMapper deckMapper;
 
     @GetMapping("/decks")
     List<DeckDTO> all() {
-        return deckService.getAllDecks().stream().map(deckDTOMapper::mapToDeckDTO).collect(Collectors.toList());
+        return deckService.getAllDecks().stream().map(deckMapper::mapToDeckDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/decks/{id}")
     DeckDTO getDeckById(@PathVariable Long id) {
-        return deckDTOMapper.mapToDeckDTO(deckService.getDeckById(id));
+        return deckMapper.mapToDeckDTO(deckService.getDeckById(id));
     }
 
     @GetMapping("/decks/search")
     DeckDTO getDeckByDeckName(@RequestParam(value = "deckName", required = false) String deckName) {
-        return deckDTOMapper.mapToDeckDTO(deckService.getDeckByDeckName(deckName));
+        return deckMapper.mapToDeckDTO(deckService.getDeckByDeckName(deckName));
     }
 
     @PostMapping("/decks")
     @ResponseStatus(HttpStatus.CREATED)
     DeckDTO createDeck(@RequestBody DeckDTO newDeckDTO) {
-        Deck newDeck = deckDTOMapper.mapToDeck(newDeckDTO);
-        return deckDTOMapper.mapToDeckDTO(deckService.createDeck(newDeck));
+        Deck newDeck = deckMapper.mapToDeck(newDeckDTO);
+        return deckMapper.mapToDeckDTO(deckService.createDeck(newDeck));
     }
 
     @PutMapping("/decks/{id}")
     DeckDTO replaceDeck(@RequestBody DeckDTO newDeckDTO, @PathVariable Long id) {
-        Deck replacedDeck = deckService.replaceDeck(deckDTOMapper.mapToDeck(newDeckDTO), id);
-        return deckDTOMapper.mapToDeckDTO(replacedDeck);
+        Deck replacedDeck = deckMapper.mapToDeck(newDeckDTO);
+        return deckMapper.mapToDeckDTO(deckService.replaceDeck(replacedDeck, id));
     }
 
     @DeleteMapping("/decks/{id}")

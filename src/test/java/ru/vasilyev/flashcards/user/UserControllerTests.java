@@ -40,7 +40,7 @@ public class UserControllerTests {
     DeckService deckService;
 
     @Autowired
-    MappingUtils userDTOMapper;
+    UserMapper userMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -111,12 +111,13 @@ public class UserControllerTests {
         Long id = userService.getUserByLogin("Fedor").getId();
 
         this.mockMvc.perform(put("/users/{id}", id)
-                        .content(objectMapper.writeValueAsString(UserMapper.MAPPER.mapToUserDTO(newUser)))
+                        .content(objectMapper.writeValueAsString(userMapper.mapToUserDTO(newUser)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.login").value("Arnold"))
-                .andExpect(jsonPath("$.email").value("arnold123@mail.ru"));
+                .andExpect(jsonPath("$.email").value("arnold123@mail.ru"))
+                .andExpect(jsonPath("$.decksDTO").isNotEmpty());
     }
 
     @Test

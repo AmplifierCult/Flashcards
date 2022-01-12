@@ -13,6 +13,7 @@ import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
 import ru.vasilyev.flashcards.dto.MappingUtils;
+import ru.vasilyev.flashcards.dto.mapper.DeckMapper;
 import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.service.DeckService;
 
@@ -31,7 +32,7 @@ public class DeckControllerTests {
     DeckService deckService;
 
     @Autowired
-    MappingUtils deckDTOMapper;
+    DeckMapper deckMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -62,7 +63,7 @@ public class DeckControllerTests {
     void deckControllerPostRequests() throws Exception {
         Deck newDeck = new Deck("Engineering");
         this.mockMvc.perform(post("/decks")
-                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(newDeck)))
+                        .content(objectMapper.writeValueAsString(deckMapper.mapToDeckDTO(newDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -76,7 +77,7 @@ public class DeckControllerTests {
         replacedDeck.setDeckName("Space");
         Long id = replacedDeck.getId();
         this.mockMvc.perform(put("/decks/{id}", id)
-                        .content(objectMapper.writeValueAsString(deckDTOMapper.mapToDeckDTO(replacedDeck)))
+                        .content(objectMapper.writeValueAsString(deckMapper.mapToDeckDTO(replacedDeck)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())

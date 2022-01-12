@@ -74,10 +74,12 @@ public class LoadDataBase {
         secondCard.setAuthor(author);
         secondCard.setTranslatedWord("Железо");
         secondCard.setCreationDate(Instant.now());
+
         Card thirdCard = new Card("Water");
         thirdCard.setAuthor(author);
         thirdCard.setTranslatedWord("Вода");
         thirdCard.setCreationDate(Instant.now());
+
         Card fourthCard = new Card("Rock");
         fourthCard.setAuthor(author);
         fourthCard.setTranslatedWord("Камень");
@@ -95,14 +97,32 @@ public class LoadDataBase {
 
     public void initStatisticsDatabase() {
         User author = userRepository.findByLogin("Andrey");
+
         Card firstCard = cardRepository.findByWord("Wood");
         Card secondCard = cardRepository.findByWord("Iron");
         Card thirdCard = cardRepository.findByWord("Water");
         Card fourthCard = cardRepository.findByWord("Rock");
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Low", author, firstCard)));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Middle", author, secondCard)));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("High", author, thirdCard)));
-        log.info("Preloading " + statisticsRepository.save(new Statistics("Perfect", author, fourthCard)));
+
+        Statistics firstStatistics = new Statistics("Low");
+        firstStatistics.setUser(author);
+        firstStatistics.setCard(firstCard);
+
+        Statistics secondStatistics = new Statistics("Middle");
+        secondStatistics.setUser(author);
+        secondStatistics.setCard(secondCard);
+
+        Statistics thirdStatistics = new Statistics("High");
+        thirdStatistics.setUser(author);
+        thirdStatistics.setCard(thirdCard);
+
+        Statistics fourthStatistics = new Statistics("Perfect");
+        fourthStatistics.setUser(author);
+        fourthStatistics.setCard(fourthCard);
+
+        log.info("Preloading " + statisticsRepository.save(firstStatistics));
+        log.info("Preloading " + statisticsRepository.save(secondStatistics));
+        log.info("Preloading " + statisticsRepository.save(thirdStatistics));
+        log.info("Preloading " + statisticsRepository.save(fourthStatistics));
     }
 
     public void cleanStatisticsDataBase() {
@@ -111,13 +131,21 @@ public class LoadDataBase {
 
     public void initDeckDatabase() {
         User author = userRepository.findByLogin("Andrey");
-        Deck firstDeck = new Deck("Metals", author);
+
+        Deck firstDeck = new Deck("Metals");
+        firstDeck.setAuthor(author);
         firstDeck.setCreationDate(Instant.now());
-        Deck secondDeck = new Deck("Weather", author);
+
+        Deck secondDeck = new Deck("Weather");
+        secondDeck.setAuthor(author);
         secondDeck.setCreationDate(Instant.now());
-        Deck thirdDeck = new Deck("Types of wood", author);
+
+        Deck thirdDeck = new Deck("Types of wood");
+        thirdDeck.setAuthor(author);
         thirdDeck.setCreationDate(Instant.now());
-        Deck fourthDeck = new Deck("Types of animals", author);
+
+        Deck fourthDeck = new Deck("Types of animals");
+        fourthDeck.setAuthor(author);
         fourthDeck.setCreationDate(Instant.now());
 
         log.info("Preloading " + deckRepository.save(firstDeck));

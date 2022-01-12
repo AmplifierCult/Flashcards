@@ -22,7 +22,7 @@ public class UserDTO {
 
     private String lastActionDate;
 
-    private List<String> deckNames;
+    private List<DeckDTO> decksDTO;
 
     public UserDTO() {
     }
@@ -75,11 +75,11 @@ public class UserDTO {
         this.lastActionDate = lastActionDate;
     }
 
-    public List<String> getDeckNames() {
-        return deckNames;
+    public List<DeckDTO> getDecksDTO() {
+        return decksDTO;
     }
 
-    public void setDeckNames(List<String> deckNames) {
-        this.deckNames = deckNames;
+    public void setDecksDTO(List<DeckDTO> decksDTO) {
+        this.decksDTO = decksDTO;
     }
 }

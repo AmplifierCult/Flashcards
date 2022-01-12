@@ -25,33 +25,36 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserMapper userMapper;
+
     @GetMapping("/users")
     List<UserDTO> all() {
-        return userService.getAllUsers().stream().map(UserMapper.MAPPER::mapToUserDTO).collect(Collectors.toList());
+        return userService.getAllUsers().stream().map(userMapper::mapToUserDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/users/{id}")
     UserDTO getUserById(@PathVariable Long id) {
-        return UserMapper.MAPPER.mapToUserDTO(userService.getUserById(id));
+        return userMapper.mapToUserDTO(userService.getUserById(id));
     }
 
     @GetMapping("/users/search")
     UserDTO getUserByLogin(@RequestParam(value = "login", required = false) String login) {
-        return UserMapper.MAPPER.mapToUserDTO(userService.getUserByLogin(login));
+        return userMapper.mapToUserDTO(userService.getUserByLogin(login));
     }
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     UserDTO newUser(@RequestBody UserDTO newUserDTO) {
-        User newUser = UserMapper.MAPPER.mapToUser(newUserDTO);
+        User newUser = userMapper.mapToUser(newUserDTO);
         User createdUser = userService.createUser(newUser);
-        return UserMapper.MAPPER.mapToUserDTO(createdUser);
+        return userMapper.mapToUserDTO(createdUser);
     }
 
     @PutMapping("/users/{id}")
     UserDTO replaceUser(@RequestBody UserDTO newUserDTO, @PathVariable Long id) {
-        User newUser = UserMapper.MAPPER.mapToUser(newUserDTO);
-        return UserMapper.MAPPER.mapToUserDTO(userService.updateUser(newUser, id));
+        User newUser = userMapper.mapToUser(newUserDTO);
+        return userMapper.mapToUserDTO(userService.updateUser(newUser, id));
     }
 
     @DeleteMapping("/user/{id}")

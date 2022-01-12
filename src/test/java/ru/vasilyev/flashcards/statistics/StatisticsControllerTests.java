@@ -13,6 +13,7 @@ import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Statistics;
 import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.StatisticsDTO;
+import ru.vasilyev.flashcards.dto.mapper.StatisticsMapper;
 import ru.vasilyev.flashcards.service.StatisticsService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,7 +28,7 @@ public class StatisticsControllerTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    MappingUtils statisticsDTOMapper;
+    StatisticsMapper statisticsMapper;
 
     @Autowired
     StatisticsService statisticsService;
@@ -61,7 +62,7 @@ public class StatisticsControllerTests {
     void statisticsControllerPostRequest() throws Exception { //TODO FIX ME
         Statistics newStatistics = new Statistics("Low");
         this.mockMvc.perform(post("/statistics")
-                        .content(objectMapper.writeValueAsString(statisticsDTOMapper.mapToStatisticsDTO(newStatistics)))
+                        .content(objectMapper.writeValueAsString(statisticsMapper.mapToStatisticsDTO(newStatistics)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isCreated())
@@ -75,7 +76,7 @@ public class StatisticsControllerTests {
         replacedStatistics.setKnowledgeLevel("Perfect");
         Long id = replacedStatistics.getId();
         this.mockMvc.perform(put("/statistics/{id}", id)
-                        .content(objectMapper.writeValueAsString(statisticsDTOMapper.mapToStatisticsDTO(replacedStatistics)))
+                        .content(objectMapper.writeValueAsString(statisticsMapper.mapToStatisticsDTO(replacedStatistics)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(jsonPath("$.id").exists())

@@ -45,7 +45,8 @@ public class DeckRepositoryTests {
     @Test
     void baseCreateOperations() {
         User author = userRepository.findByLogin("Andrey");
-        Deck newDeck = new Deck("Coding", author);
+        Deck newDeck = new Deck("Coding");
+        newDeck.setAuthor(author);
         newDeck.setCreationDate(Instant.now());
         deckRepository.save(newDeck);
         assertEquals(5, deckRepository.count());

@@ -22,7 +22,7 @@ public class DeckDTO {
 
     private Long id;
 
-    private List<Long> deckOfCardsId;
+    private List<CardDTO> deckDTO;
 
     private String deckName;
     private Boolean sharedAccess;
@@ -42,12 +42,12 @@ public class DeckDTO {
         this.id = id;
     }
 
-    public List<Long> getDeckOfCardsId() {
-        return deckOfCardsId;
+    public List<CardDTO> getDeckDTO() {
+        return deckDTO;
     }
 
-    public void setDeckOfCardsId(List<Long> deckOfCardsId) {
-        this.deckOfCardsId = deckOfCardsId;
+    public void setDeckDTO(List<CardDTO> deckDTO) {
+        this.deckDTO = deckDTO;
     }
 
     public String getDeckName() {

@@ -4,7 +4,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -28,10 +31,9 @@ public class Deck {
     Boolean sharedAccess;
     byte [] cover;
 
-    @NotNull(message = "creationDate cannot be null")
     Instant creationDate;
 
-    @NotNull(message = "author cannot be null")
+    //@NotNull(message = "author cannot be null")
     @ManyToOne
     @JoinColumn(name = "author_id")
     User author;
@@ -41,11 +43,6 @@ public class Deck {
 
     public Deck(String deckName) {
         this.deckName = deckName;
-    }
-
-    public Deck(String deckName, User author) {
-        this.deckName = deckName;
-        this.author = author;
     }
 
     public Long getId() {
@@ -124,10 +121,10 @@ public class Deck {
         return "Deck{" +
                 "id=" + id +
                 ", deckName='" + deckName + '\'' +
-                ", sharedAccess=" + sharedAccess +
-                ", creationDate=" + creationDate +
-                ", authorId=" + author.getId() +
-                ", authorName=" + author.getLogin() +
+                ", sharedAccess='" + sharedAccess + '\'' +
+                ", creationDate='" + DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z", Locale.US).withZone(ZoneId.systemDefault()).format(creationDate) + '\'' +
+                ", authorId='" + author.getId() + '\'' +
+                ", authorName='" + author.getLogin() + '\'' +
                 '}';
     }
 }

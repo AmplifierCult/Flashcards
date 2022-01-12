@@ -9,11 +9,8 @@ import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.dto.CardDTO;
 import ru.vasilyev.flashcards.service.UserService;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CardMapper {
-
-    UserService USER_SERVICE = new UserService();
-    CardMapper MAPPER = Mappers.getMapper(CardMapper.class);
 
     @Mapping(target = "authorId", source = "author")
     @Mapping(target = "creationDate", dateFormat = "EEE, d MMM yyyy HH:mm:ss Z")
@@ -29,6 +26,6 @@ public interface CardMapper {
     Card mapToCard(CardDTO cardDTO);
 
     default User authorIdToAuthor(Long authorId) {
-        return USER_SERVICE.getUserById(authorId);
+        return null;
     }
 }

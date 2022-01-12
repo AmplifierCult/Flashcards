@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Statistics;
 import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.StatisticsDTO;
+import ru.vasilyev.flashcards.dto.mapper.StatisticsMapper;
 import ru.vasilyev.flashcards.service.StatisticsService;
 
 import java.util.List;
@@ -22,34 +23,34 @@ public class StatisticsController {
     StatisticsService statisticsService;
 
     @Autowired
-    MappingUtils statisticsDTOMapper;
+    StatisticsMapper statisticsMapper;
 
     @GetMapping("/statistics")
     List<StatisticsDTO> all() {
-        return statisticsService.getAllStatistics().stream().map(statisticsDTOMapper::mapToStatisticsDTO).collect(Collectors.toList());
+        return statisticsService.getAllStatistics().stream().map(statisticsMapper::mapToStatisticsDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/statistics/{id}")
     StatisticsDTO getStatisticsById(@PathVariable Long id) {
-        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.getStatisticsById(id));
+        return statisticsMapper.mapToStatisticsDTO(statisticsService.getStatisticsById(id));
     }
 
     @GetMapping("/statistics/search")
     List<StatisticsDTO> getStatisticsByKnowledgeLevel(@RequestParam(value = "knowledgeLevel", required = false) String knowledgeLevel) {
-        return statisticsService.getStatisticsByKnowledgeLevel(knowledgeLevel).stream().map(statisticsDTOMapper::mapToStatisticsDTO).collect(Collectors.toList());
+        return statisticsService.getStatisticsByKnowledgeLevel(knowledgeLevel).stream().map(statisticsMapper::mapToStatisticsDTO).collect(Collectors.toList());
     }
 
     @PostMapping("/statistics")
     @ResponseStatus(HttpStatus.CREATED)
     StatisticsDTO createStatistics(@RequestBody StatisticsDTO newStatisticsDTO) {
-        Statistics newStatistics = statisticsDTOMapper.mapToStatistics(newStatisticsDTO);
-        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.createStatistics(newStatistics));
+        Statistics newStatistics = statisticsMapper.mapToStatistics(newStatisticsDTO);
+        return statisticsMapper.mapToStatisticsDTO(statisticsService.createStatistics(newStatistics));
     }
 
     @PutMapping("/statistics/{id}")
     StatisticsDTO replaceStatistics(@RequestBody StatisticsDTO newStatisticsDTO, @PathVariable Long id) {
-        Statistics newStatistics = statisticsDTOMapper.mapToStatistics(newStatisticsDTO);
-        return statisticsDTOMapper.mapToStatisticsDTO(statisticsService.replaceStatistics(newStatistics, id));
+        Statistics newStatistics = statisticsMapper.mapToStatistics(newStatisticsDTO);
+        return statisticsMapper.mapToStatisticsDTO(statisticsService.replaceStatistics(newStatistics, id));
     }
 
     @DeleteMapping("/statistics/{id}")

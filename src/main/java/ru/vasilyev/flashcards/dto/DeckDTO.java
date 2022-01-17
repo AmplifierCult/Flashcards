@@ -22,12 +22,12 @@ public class DeckDTO {
 
     private Long id;
 
-    private List<CardDTO> deckDTO;
+    private List<Long> cardsId;
 
     private String deckName;
     private Boolean sharedAccess;
     private byte [] cover;
-    private String creationDate;
+    private Instant creationDate;
 
     private Long authorId;
 
@@ -42,12 +42,12 @@ public class DeckDTO {
         this.id = id;
     }
 
-    public List<CardDTO> getDeckDTO() {
-        return deckDTO;
+    public List<Long> getCardsId() {
+        return cardsId;
     }
 
-    public void setDeckDTO(List<CardDTO> deckDTO) {
-        this.deckDTO = deckDTO;
+    public void setCardsId(List<Long> cardsId) {
+        this.cardsId = cardsId;
     }
 
     public String getDeckName() {
@@ -74,11 +74,11 @@ public class DeckDTO {
         this.cover = cover;
     }
 
-    public String getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 

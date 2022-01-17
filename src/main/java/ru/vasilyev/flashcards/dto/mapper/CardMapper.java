@@ -3,11 +3,9 @@ package ru.vasilyev.flashcards.dto.mapper;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.dto.CardDTO;
-import ru.vasilyev.flashcards.service.UserService;
 
 @Mapper(componentModel = "spring")
 public interface CardMapper {

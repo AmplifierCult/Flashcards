@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
-import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.mapper.DeckMapper;
 import ru.vasilyev.flashcards.service.DeckService;
 
@@ -35,9 +34,14 @@ public class DeckController {
         return deckMapper.mapToDeckDTO(deckService.getDeckById(id));
     }
 
-    @GetMapping("/decks/search")
-    DeckDTO getDeckByDeckName(@RequestParam(value = "deckName", required = false) String deckName) {
+    @GetMapping("/decks/search/{deckName}")
+    DeckDTO getDeckByDeckName(@PathVariable String deckName) {
         return deckMapper.mapToDeckDTO(deckService.getDeckByDeckName(deckName));
+    }
+
+    @GetMapping("/decks/search/authorId={authorId}")
+    List<DeckDTO> getDecksByAuthor(@PathVariable Long authorId) {
+        return deckMapper.decksToDecksDTO(deckService.getDecksByAuthor(authorId));
     }
 
     @PostMapping("/decks")

@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.domain.User;
 import ru.vasilyev.flashcards.repository.DeckRepository;
-import ru.vasilyev.flashcards.repository.UserRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -30,7 +29,7 @@ public class DeckService {
     DeckRepository deckRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     public List<Deck> getAllDecks() {
         return deckRepository.findAll();
@@ -45,6 +44,11 @@ public class DeckService {
         return deckRepository.findByDeckName(deckName);
     }
 
+    public List<Deck> getDecksByAuthor(Long authorId) {
+        User author = userService.getUserById(authorId);
+        return deckRepository.findByAuthor(author);
+    }
+
     public Deck createDeck(Deck newDeck) {
         newDeck.setAuthor(assignAuthor());
         newDeck.setCreationDate(Instant.now());
@@ -56,7 +60,7 @@ public class DeckService {
         validateDeck(newDeck);
         return deckRepository.findById(id)
                 .map(deck -> {
-                    deck.setDeck(newDeck.getDeck());
+                    deck.setCards(newDeck.getCards());
                     deck.setDeckName(newDeck.getDeckName());
                     deck.setSharedAccess(newDeck.getSharedAccess());
                     deck.setCover(newDeck.getCover());
@@ -85,11 +89,10 @@ public class DeckService {
         deckRepository.deleteById(id);
     }
 
-    private User assignAuthor() {
+    private User assignAuthor() { //TODO Заглушка до настройки Spring Security
         User user = new User("Mick");
         user.setPassword("qwerty");
         user.setRegistrationDate(Instant.now());
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
-
 }

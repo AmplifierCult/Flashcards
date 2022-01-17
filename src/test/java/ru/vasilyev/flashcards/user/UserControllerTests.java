@@ -2,7 +2,6 @@ package ru.vasilyev.flashcards.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.User;
-import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.UserDTO;
 import ru.vasilyev.flashcards.dto.mapper.UserMapper;
-import ru.vasilyev.flashcards.repository.UserRepository;
 import ru.vasilyev.flashcards.service.DeckService;
 import ru.vasilyev.flashcards.service.UserService;
 

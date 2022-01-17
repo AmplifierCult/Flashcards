@@ -3,30 +3,30 @@ package ru.vasilyev.flashcards.dto.mapper;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.domain.Deck;
 import ru.vasilyev.flashcards.dto.DeckDTO;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {CardMapper.class})
+@Mapper(componentModel = "spring")
 public interface DeckMapper {
 
-    @Mapping(target = "deckDTO", source = "deck")
+    @Mapping(target = "cardsId", source = "cards")
     DeckDTO mapToDeckDTO(Deck deck);
 
-    default String creationDateToString(Instant creationDate) {
-        if (creationDate != null) {
-            return DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z", Locale.US).withZone(ZoneId.systemDefault()).format(creationDate);
+    default List<Long> cardsToCardsId(List<Card> cards) {
+        if (cards != null) {
+            return cards.stream().map(Card::getId).collect(Collectors.toList());
         } else return null;
     }
 
-    default Instant stringToCreationDate(String creationDate) {
-        return null;
+    default List<DeckDTO> decksToDecksDTO(List<Deck> decks) {
+        if (decks != null) {
+            return decks.stream().map(this::mapToDeckDTO).collect(Collectors.toList());
+        } else return null;
     }
 
-    @InheritInverseConfiguration
     Deck mapToDeck(DeckDTO deckDTO);
 }

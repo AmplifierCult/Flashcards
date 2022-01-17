@@ -3,10 +3,7 @@ package ru.vasilyev.flashcards.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.vasilyev.flashcards.domain.Statistics;
-import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.StatisticsDTO;
 import ru.vasilyev.flashcards.dto.mapper.StatisticsMapper;
 import ru.vasilyev.flashcards.service.StatisticsService;
@@ -38,19 +35,6 @@ public class StatisticsController {
     @GetMapping("/statistics/search")
     List<StatisticsDTO> getStatisticsByKnowledgeLevel(@RequestParam(value = "knowledgeLevel", required = false) String knowledgeLevel) {
         return statisticsService.getStatisticsByKnowledgeLevel(knowledgeLevel).stream().map(statisticsMapper::mapToStatisticsDTO).collect(Collectors.toList());
-    }
-
-    @PostMapping("/statistics")
-    @ResponseStatus(HttpStatus.CREATED)
-    StatisticsDTO createStatistics(@RequestBody StatisticsDTO newStatisticsDTO) {
-        Statistics newStatistics = statisticsMapper.mapToStatistics(newStatisticsDTO);
-        return statisticsMapper.mapToStatisticsDTO(statisticsService.createStatistics(newStatistics));
-    }
-
-    @PutMapping("/statistics/{id}")
-    StatisticsDTO replaceStatistics(@RequestBody StatisticsDTO newStatisticsDTO, @PathVariable Long id) {
-        Statistics newStatistics = statisticsMapper.mapToStatistics(newStatisticsDTO);
-        return statisticsMapper.mapToStatisticsDTO(statisticsService.replaceStatistics(newStatistics, id));
     }
 
     @DeleteMapping("/statistics/{id}")

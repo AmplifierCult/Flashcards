@@ -2,7 +2,6 @@ package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +22,7 @@ public class Deck {
             inverseJoinColumns = {@JoinColumn(name = "Card")} //TODO FIX ME перевести в нижний регистр
     )
     @OrderColumn
-    List<Card> deck; //TODO FIX ME переименовать в cards
+    List<Card> cards;
 
     @NotBlank(message = "deckName cannot be empty")
     String deckName;
@@ -53,12 +52,12 @@ public class Deck {
         this.id = id;
     }
 
-    public List<Card> getDeck() {
-        return deck;
+    public List<Card> getCards() {
+        return cards;
     }
 
-    public void setDeck(List<Card> deck) {
-        this.deck = deck;
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public String getDeckName() {

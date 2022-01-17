@@ -9,7 +9,7 @@ import ru.vasilyev.flashcards.dto.UserDTO;
 @Mapper(componentModel = "spring",uses = {DeckMapper.class})
 public interface UserMapper {
 
-    @Mapping(target = "decksDTO", source = "decks")
+    //@Mapping(target = "decksDTO", source = "decks")
     UserDTO mapToUserDTO(User user);
 
     @InheritInverseConfiguration

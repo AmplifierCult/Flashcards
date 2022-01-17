@@ -2,11 +2,7 @@ package ru.vasilyev.flashcards.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,12 +12,10 @@ public class Statistics {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull(message = "user cannot be null")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     User user;
 
-    @NotNull(message = "card cannot be null")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "card_id")
     Card card;
@@ -43,12 +37,6 @@ public class Statistics {
     public Statistics(String knowledgeLevel) {
         this.knowledgeLevel = knowledgeLevel;
     }
-
-    /*public Statistics(String knowledgeLevel, User user, Card card) {
-        this.knowledgeLevel = knowledgeLevel;
-        this.user = user;
-        this.card = card;
-    }*/
 
     public Long getId() {
         return id;
@@ -121,7 +109,7 @@ public class Statistics {
                 ", userName=" + user.getLogin() +
                 ", cardId=" + card.getId() +
                 ", word=" + card.getWord() +
-                ", lastRecurrenceDate=" + DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z", Locale.US).withZone(ZoneId.systemDefault()).format(lastRecurrenceDate) +
+                ", lastRecurrenceDate=" + lastRecurrenceDate +
                 ", knowledgeLevel='" + knowledgeLevel + '\'' +
                 '}';
     }

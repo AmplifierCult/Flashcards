@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vasilyev.flashcards.domain.Card;
 import ru.vasilyev.flashcards.dto.CardDTO;
-import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.mapper.CardMapper;
 import ru.vasilyev.flashcards.service.CardService;
 

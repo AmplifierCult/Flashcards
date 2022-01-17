@@ -11,11 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vasilyev.flashcards.LoadDataBase;
 import ru.vasilyev.flashcards.domain.Deck;
-import ru.vasilyev.flashcards.dto.DeckDTO;
-import ru.vasilyev.flashcards.dto.MappingUtils;
 import ru.vasilyev.flashcards.dto.mapper.DeckMapper;
-import ru.vasilyev.flashcards.repository.DeckRepository;
 import ru.vasilyev.flashcards.service.DeckService;
+import ru.vasilyev.flashcards.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,6 +25,9 @@ public class DeckControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     DeckService deckService;
@@ -55,8 +56,25 @@ public class DeckControllerTests {
     }
 
     @Test
-    void deckControllerGetRequests() throws Exception {
+    void getAllDecks() throws Exception {
         this.mockMvc.perform(get("/decks")).andExpect(status().isOk());
+    }
+
+    @Test
+    void getDeckById() throws Exception {
+        Long id = deckService.getDeckByDeckName("Types of wood").getId();
+        this.mockMvc.perform(get("/decks/search/{id}", id)).andExpect(status().isOk());
+    }
+
+    @Test
+    void getDeckByDeckName() throws Exception {
+        this.mockMvc.perform(get("/decks/search/{deckName}", "Types of wood")).andExpect(status().isOk());
+    }
+
+    @Test
+    void getDecksByAuthorId() throws Exception {
+        Long authorId = userService.getUserByLogin("Andrey").getId();
+        this.mockMvc.perform(get("/decks/search/authorId={authorId}", authorId)).andExpect(status().isOk());
     }
 
     @Test
